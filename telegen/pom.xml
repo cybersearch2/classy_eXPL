@@ -41,7 +41,10 @@
   </repositories>
   <modules>
     <module>telegen-application</module>
-    <module>telegen-tests</module>
+     <!-- Integration tests disabled because of issue with android-maven-plugin 4.3.0. 
+         To enable, refer
+         https://github.com/simpligility/android-maven-plugin/issues/660 
+   <module>telegen-tests</module>-->
   </modules>
   <!-- This SCM needed for releasing this module on it's own -->
   <scm>
