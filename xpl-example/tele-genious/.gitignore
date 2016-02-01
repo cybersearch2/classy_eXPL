@@ -1,0 +1,7 @@
+/target/
+/.classpath
+/.settings/
+/.factorypath
+/bin/
+/pom.xml.releaseBackup
+/pom.xml.tag

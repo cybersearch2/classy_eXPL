@@ -1,0 +1,146 @@
+eXPL v1.12
+
+ 1. Add functions and script queries. A major update which introduced new interfaces and classes.
+ 2. Give access to all scopes from any scope
+ 3. Allow an axiom parameter to be to be assigned an Axiom List returned from a function or script query
+ 4. Fix Choice default value design which was selecting an invalid item 
+ 5. Add flag to ScopeContext constructor to limit preservation to only the current (function) scope
+ 6. Add duplicateOperandCheck() method to OperandMap
+ 7. Introduce inner Template and '<<' operator to for Calculator query. 
+ 8. Add 'isInnerTemplate' flag to Template to provid a way to signal added terms should not be added to the OperandMap
+ 9. QueryEvaluator fixes applied and now returns Void type as results are now placed in prepared AxiomTermList
+10, Add AxiomOperand to support AxiomList assignment and concatenation
+10. Enhance VariableType to return AxiomOperand instance for AXIOM OperandType
+11. Remove unnecessary Template and Axiom super class overrides
+12. Fix CallOperand visitor logic
+13. Add Concaten interface to generalize Evaluator concatenation operation
+14. Add AxiomUtils for deep copy of Axioms and axiom Terms
+15. Enhance QueryLauncher by allowing passing of arguments from QueryParams to Calculator execution calls
+16. Add initialization of axioms to Calculator and return of solution from Template as AxiomList
+17. Change Scope.getTemplate() so it looks first in global scope
+18. Change ScopeContext and OperandMap so only lists which are empty at the start are cleared on reset.
+19. Change OperandMap to remove addition of new item list variable to OperandMap.
+20. Update syntax to remove 'calc' keyword from query declaration. 
+21. Update ParserAssembler and Template to use new 'isCalculator" flag
+22. ParserAssembler addScopeAxiom() and getAxiomTermNameList() now look first in global scope for axiomTermNameList
+23. Refactor active part of ParameterOperand to dependency ParameterList and share it with new AxiomParameterOperand
+24. Make return type of CallEvaluator generic and make associated classes generic to suit
+25. Apply interface Concaten<String> to Operands which may have StringOperand delegates
+26. Set Structure termList to empty list in constructor and update all empty list tests
+27. Automatically insert LogicQuery as head query when a calculator is at the head and an axiom key specified
+28. Dynamically populate automatically inserted Template and get Calculator to look for axiom in Solution
+29. QueryLauncher now uses axiomKey only for choice Template
+30. Replace QueryParams Axiom passing design to use a Solution object and clear Scope Axioms on ScopeContext reset()
+31. Fixed issue with Evaluator clearValue() which was not invoking operand backup to permit another calculation
+32. Added id to interface ItemList newVariableInstance() so list variable id can be set for AxiomTermList item in AxiomList
+33. Bind a dynamic AxiomListVariable to to a Variable operand instead of an AxiomOperand
+34. Add concatenation to DelegateOperand, with AxiomList a special case from standard String concatenation.
+35. Add clearValue() override to DelegateOperand which visits child operand tree and forces backup
+36. AxiomParameterOperand updated to specify axiom name separately from operand name
+37. Do not add terms with qualified names to Axiom from Template conversion
+38. Fix compiler TemplateExpression and AxiomList productions
+39. CurrencyOperand to refresh it's country locale in formatValue() in case it has changed since last evaluation
+40. Fix Variable not updating delegate class after evaluation
+41. Create static AssignOnlyOperator delegate for DelegateOperator
+42. Allow unnamed parameters to be used in query call
+43. Add Calculator queries in same scope. Template push() and pop() saves and restores call context.
+44. A Calculator query can now reference a query or a Calculator, with query having precedence
+45. ParserAssembler changes to reference AxiomLists in variables completed
+46. Support single dimension AxiomList variable access. See insert sort for example.
+47. Copy term names list when concatenating to an empty AxiomLIst
+48. Update AxiomUtils.marshallAxiomTerms() to copy each term value to Parameter to make it immutable
+49. ParserAssembler getQueryOperand() method split off from getCallOperand() as function and query invocations are now different
+50. Allow an AxiomTermList object to be assigned to an AxiomListVariable object
+51. Add AxiomListListener interface to AxiomOperand to add AxiomLists to query results
+52. Prevent literal value assignment being converted to simply a literal operand
+53. Fix AxiomParameterOperand id not being updated on evaluation
+54. Add Unknown helper class and replace complilier NULL literal with UNKNOWN literal.
+55. Change QueryParams properties to parameters - Axioms mapped to template qualified names
+56. New OperandParam helper class is now used to pass parameters to calls.
+57. Compilier now collects call parameters and axiom terms into lists containing OperandParam objects
+58. Applicable Operand classes updated to to use OperandParam objects
+59. Add inner Choice which uses local variables
+60. Update Evaluator to evaluate non-empty right hand term if id == 0, indicating static initialization
+61. Add LiteralListOperand for matching template term to list of literal values
+62. Add unnamed Axiom List Literal assignment and concatenation
+63. Add HighCityAxioms example to tutorial 7
+64. Adapt AxiomListVariable to allow access to the terms of a singleton by name
+65. Add Choice pass-thru variables
+66. Add 2 Choice samples to tutorial 10
+67. Add tutorial 17 with calculator query samples
+68. Add to Term interface setValue() and clearValue() and assign() changed to take Term parameter and set id from it.
+69. Add literal expressions to Variables instead of just assigning value at compile time.
+70. Fix javacc code generation bug.
+
+
+eXPL v1.11
+
+Update to Classy Tools v1.12 and Android Support Library v22.2.1
+______________________________________________________________________________________________________________________
+eXPL v1.0.9
+
+ 1. Comment out SE7 code in parser Scope and ScopeTest classes
+ 2. Import Tele-Genious application from Classy_apps to reverse project dependency
+ 3. Refactor parser Result class and dependent Scope and Operand classes so it delivers Axioms instead of iterables
+ 4. Move ParserAssembler addAxiomCollection() and addTemplateList() to test class QueryExecuterAdapter
+ 5. Fix QueryProgram so backup is performed after a calculation 
+ 6. Tele-Genious displays issues as a list and click issue brings up troubleshooting dialog
+ 7. Adjust for classyjava change to interface PersistenceWork, which now extends PersistenceTask
+ 8. Replace PropertiesListAdapter.Value with Parcelable ListItem
+ 9. Update android.support.version to 22.2 and android.plugin.version to 4.3.0
+10. Complete Telegen release configuration and use shading for compressed release  APK
+______________________________________________________________________________________________________________________
+eXPL v1.0.8
+
+1. Add axiom term names to AxiomSource for working with scopes
+2. Control how Evaluator performs implicit type conversion to prevent loss of information
+3. Change MatchOperand to take Operand as match item and match anything to Null for default case
+4. Fix Choice so it handles scopes correctly
+5. Change Choice and Calculator so a short circuit happens when no selection is made
+6. Allow list items as Choice selection terms
+7. Add GermanColors and ColorSwatch Tutorials
+______________________________________________________________________________________________________________________
+eXPL v1.0.7
+
+ 1. Fix JpaSourceIterator test for no term names supplied.
+ 2. Fix PersistenceAgriculture Tutorial - wrong JpaCollector used.
+ 3. Apply unit test to each Tutorial.
+ 4. Remove maven-processor-plugin
+ 5. Fix potential NPE in QueryParams.executeQueryParams()
+ 6. Set first term of Choice result axiom if default selected
+ 7. Change default of Choice to last selection
+ 8. Add MatchOperand for correct Choice literal selection
+ 9. Add Choice literal selection tests to QueryParserTest
+10. Decode INTEGER literals to include hex literals
+11. Decode FLOATING_POINT literals using Double.valueOf for efficiency
+12. Enhance parsing of formated numbers by using JRE NumberFormat. 
+    Such numbers to be indicated by enclosing them in braces.
+13. Change internal IntegerOperand and IntegerTerm type to Long to support number formating.
+14. Allow choice selection from solution and change default to last row
+15. Add parsing of numbers enclosed in braces
+16. Update comments and review tutorials
+______________________________________________________________________________________________________________________
+eXPL v1.0.6
+
+Release built on Jenkins
+______________________________________________________________________________________________________________________
+eXPL v1.0.5
+
+1. Fix JpaSourceIterator so id field added to Axiom only if no term names provided
+2. Fix compiler error in ChoiceItem introduced with regex matching. Add matching on literals. 
+______________________________________________________________________________________________________________________
+eXPL v1.0.4
+
+Introduce Maven Release support, with snapshot versioning and SCM and Distribution Management activation.
+______________________________________________________________________________________________________________________
+eXPL v1.0.3
+
+Refactor modules so dependency on OrmLite is optional. This means additional 2 "extensions" modules.
+Core package now only depends on classyutils module, introduced in Classy Tools v1.0.7.
+Also refactored ProviderManager so persistence component is in new JpaProviderHelper class.
+
+______________________________________________________________________________________________________________________
+eXPL v1.0.2
+
+Update to Classy Tools v1.0.4
+

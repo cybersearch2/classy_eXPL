@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.0">
+   <persistence-unit name="cities">
+       <class>au.com.cybersearch2.classy_logic.tutorial14.City</class>
+       <property name="database-name" value="cities.db"/>
+   </persistence-unit>
+    <persistence-unit name="agriculture">
+       <class>au.com.cybersearch2.classy_logic.tutorial15.Country</class>
+       <class>au.com.cybersearch2.classy_logic.tutorial15.YearPercent</class>
+       <class>au.com.cybersearch2.classy_logic.tutorial15.Agri10Year</class>
+       <property name="database-name" value="agriculture.db"/>
+   </persistence-unit>
+</persistence>

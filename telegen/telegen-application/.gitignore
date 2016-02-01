@@ -1,0 +1,12 @@
+/target/
+/bin/
+/.settings/
+/.classpath
+/gen/
+/pom.xml.releaseBackup
+/.factorypath
+/target/
+/target/
+/target/
+/pom.xml.tag
+/eclipse-aar/
