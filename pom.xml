@@ -8,6 +8,7 @@
   	<relativePath>../xpl</relativePath>
   </parent>
   <artifactId>classy_xpl</artifactId>
+  <version>1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Classy (eXPL) Parent</name>
   <description>Expression Pattern Language Compiler and Query Engine for Classy Tools</description>
