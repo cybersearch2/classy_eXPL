@@ -4,11 +4,10 @@
   <parent>
     <groupId>au.com.cybersearch2</groupId>
     <artifactId>xpl</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
   	<relativePath>../xpl</relativePath>
   </parent>
   <artifactId>classy_xpl</artifactId>
-  <version>1.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Classy (eXPL) Parent</name>
   <description>Expression Pattern Language Compiler and Query Engine for Classy Tools</description>
@@ -48,7 +47,7 @@
     <ormlite.version>4.49-SNAPSHOT</ormlite.version>
     <slf4j-version>1.7.2</slf4j-version>
     <dagger.version>2.0.2</dagger.version>
-    <classy_tools.version>1.2-SNAPSHOT</classy_tools.version>
+    <classy_tools.version>1.2</classy_tools.version>
   </properties>
   <build>
 	  <finalName>${project.artifactId}</finalName>
