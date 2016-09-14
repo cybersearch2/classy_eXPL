@@ -48,56 +48,10 @@ import au.com.cybersearch2.telegen.entity.TestIssues;
  * 14/05/2014
  */
 @RunWith(RobolectricTestRunner.class)
+@Config(sdk=23)
 public class MainActivityTest
 {
-    @Implements(value = SystemClock.class, callThroughByDefault = true)
-    public static class MyShadowSystemClock {
-        public static long elapsedRealtime() {
-            return 0;
-        }
-    }
-
-    @Implements(AsyncTaskLoader.class)
-    public static class MyShadowAsyncTaskLoader<D> 
-    {
-          @RealObject private AsyncTaskLoader<D> realLoader;
-          private SimpleFuture<D> future;
-
-          public void __constructor__(Context context) {
-            BackgroundWorker worker = new BackgroundWorker();
-            future = new SimpleFuture<D>(worker) {
-              @Override protected void done() {
-                try {
-                  final D result = get();
-                  Robolectric.getForegroundThreadScheduler().post(new Runnable() {
-                    @Override public void run() {
-                      realLoader.deliverResult(result);
-                    }
-                  });
-                } catch (InterruptedException e) {
-                  // Ignore
-                }
-              }
-            };
-          }
-
-          @Implementation
-          public void onForceLoad() {
-              Robolectric.getBackgroundThreadScheduler().post(new Runnable() {
-              @Override
-              public void run() {
-                future.run();
-              }
-            });
-          }
-
-          private final class BackgroundWorker implements Callable<D> {
-            @Override public D call() throws Exception {
-              return realLoader.loadInBackground();
-            }
-          }
-    }
-   
+    
     public static final long ID = 1L;
     static String DATABASE_NAME = "telegen.db";
 
@@ -112,11 +66,10 @@ public class MainActivityTest
     }
     
 
-    @Config(shadows = { MyShadowSystemClock.class, MyShadowAsyncTaskLoader.class })
     @Test
     public void test_OnCreate() throws Exception
     {
-        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).create().start().visible().get();
+        MainActivity mainActivity = Robolectric.buildActivity(MainActivity.class).setup().get();
         assertThat(mainActivity.telegenLogic).isNotNull();
         assertThat(mainActivity.adapter.getCount()).isEqualTo(TestIssues.ISSUE_DATA.length);
         int index = 0;
