@@ -222,9 +222,9 @@
         </dependency>
         <dependency>
           <groupId>org.robolectric</groupId>
-          <artifactId>shadows-core</artifactId>
+          <artifactId>robolectric</artifactId>
           <version>${robolectric.version}</version>
-        </dependency> 
+        </dependency>  
         <dependency>
           <groupId>org.robolectric</groupId>
           <artifactId>shadows-support-v4</artifactId>

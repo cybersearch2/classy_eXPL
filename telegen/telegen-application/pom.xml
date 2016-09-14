@@ -64,10 +64,6 @@
           <version>${classy_tools.version}</version>
            <exclusions>
             <exclusion>
-              <groupId>com.android.support</groupId>
-              <artifactId>support-v4</artifactId>        
-            </exclusion>
-            <exclusion>
               <groupId>com.j256.ormlite</groupId>
               <artifactId>ormlite-jdbc</artifactId>
             </exclusion>
@@ -116,12 +112,6 @@
           <scope>compile</scope>
         </dependency>  
         <dependency>
-          <groupId>com.android.support</groupId>
-          <artifactId>support-v4</artifactId>
-          <type>aar</type>
-          <scope>compile</scope>
-        </dependency>
-        <dependency>
           <groupId>com.j256.ormlite</groupId>
           <artifactId>ormlite-android</artifactId>
         </dependency>
@@ -149,15 +139,20 @@
         <dependency>
           <groupId>com.google.dagger</groupId>
           <artifactId>dagger-compiler</artifactId>
+          <scope>provided</scope>
           <optional>true</optional>
         </dependency>
         <!-- Exclude Support Library as already have android.support:compatibility-v4 above -->
         <dependency>
           <groupId>org.robolectric</groupId>
           <artifactId>robolectric</artifactId>
-          <version>${robolectric.version}</version>
           <scope>test</scope>
         </dependency>  
+        <dependency>
+          <groupId>org.robolectric</groupId>
+          <artifactId>shadows-support-v4</artifactId>
+          <scope>test</scope>
+        </dependency> 
         <dependency>
           <groupId>android</groupId>
           <artifactId>android</artifactId>
