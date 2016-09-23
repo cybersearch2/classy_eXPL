@@ -4,7 +4,7 @@
   <parent>
     <groupId>au.com.cybersearch2</groupId>
     <artifactId>xpl</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.3</version>
   	<relativePath>../xpl</relativePath>
   </parent>
   <artifactId>classy_xpl</artifactId>
@@ -48,7 +48,7 @@
     <ormlite.version>5.0</ormlite.version>
     <slf4j-version>1.7.2</slf4j-version>
     <dagger.version>2.6.1</dagger.version>
-    <classy_tools.version>1.3-SNAPSHOT</classy_tools.version>
+    <classy_tools.version>1.3</classy_tools.version>
   </properties>
   <build>
 	  <finalName>${project.artifactId}</finalName>

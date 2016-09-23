@@ -3,7 +3,7 @@
   <parent>
     <artifactId>telegen-parent</artifactId>
     <groupId>au.com.cybersearch2</groupId>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>telegen</artifactId>
@@ -57,15 +57,67 @@
           <manifest>
             <debuggable>true</debuggable>
           </manifest>
+          <proguard>
+            <skip>true</skip>
+            <config>proguard.cfg</config>
+            <configs>
+              <config>${env.ANDROID_HOME}/tools/proguard/proguard-android.txt</config>
+            </configs>
+          </proguard>
         </configuration>
       </plugin>
     </plugins>
   </build>
   <profiles>
     <profile>
+      <id>eclipse</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.bitbucket.komo81</groupId>
+            <artifactId>eclipse-aar-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <executions>
+              <execution>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>clean</goal>
+                  <goal>generate</goal>
+                </goals>
+                <configuration>
+                  <androidSdk>${android.platform.version}</androidSdk>
+                  <outputDirectory>${basedir}/eclipse-aar</outputDirectory>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
       <id>release</id>
       <build>
         <plugins>
+          <plugin>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>2.4</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <artifactSet>
+                    <excludes>
+                      <exclude>commons-logging:commons-logging</exclude>
+                    </excludes>
+                  </artifactSet>
+                  <minimizeJar>true</minimizeJar>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <artifactId>maven-jarsigner-plugin</artifactId>
             <version>1.2</version>
@@ -82,9 +134,9 @@
                   <removeExistingSignatures>true</removeExistingSignatures>
                   <archiveDirectory />
                   <includes>
-                    <include>e:\workspace\xpl\telegen\telegen-application\target/telegen.apk</include>
+                    <include>/opt/git-work/classy_xpl/telegen/telegen-application/target/telegen.apk</include>
                   </includes>
-                  <keystore>C:\adt-bundle-windows-x86_64\sdk/keystore/c2.keystore</keystore>
+                  <keystore>/opt/android-sdk-linux/keystore/c2.keystore</keystore>
                   <alias>cybersearch2.com.au</alias>
                   <storepass>Krypt0K9!</storepass>
                   <keypass>Krypt0K9!</keypass>
@@ -117,29 +169,29 @@
                   <zipalign>
                     <skip>false</skip>
                     <verbose>true</verbose>
-                    <inputApk>e:\workspace\xpl\telegen\telegen-application\target/telegen.apk</inputApk>
-                    <outputApk>e:\workspace\xpl\telegen\telegen-application\target/telegen-signed-aligned.apk</outputApk>
+                    <inputApk>/opt/git-work/classy_xpl/telegen/telegen-application/target/telegen.apk</inputApk>
+                    <outputApk>/opt/git-work/classy_xpl/telegen/telegen-application/target/telegen-signed-aligned.apk</outputApk>
                   </zipalign>
                   <manifest>
                     <debuggable>false</debuggable>
                     <versionCodeAutoIncrement>true</versionCodeAutoIncrement>
                   </manifest>
-                  <androidManifestFile>e:\workspace\xpl\telegen\telegen-application/AndroidManifest.xml</androidManifestFile>
-                  <assetsDirectory>e:\workspace\xpl\telegen\telegen-application/assets</assetsDirectory>
-                  <resourceDirectory>e:\workspace\xpl\telegen\telegen-application/res</resourceDirectory>
-                  <nativeLibrariesDirectory>e:\workspace\xpl\telegen\telegen-application/libs</nativeLibrariesDirectory>
-                  <sdk>
-                    <platform>22</platform>
-                  </sdk>
-                  <undeployBeforeDeploy>true</undeployBeforeDeploy>
-                  <disableConflictingDependenciesWarning>true</disableConflictingDependenciesWarning>
                   <proguard>
                     <skip>false</skip>
                     <config>proguard.cfg</config>
                     <configs>
-                      <config>C:\adt-bundle-windows-x86_64\sdk/tools/proguard/proguard-android.txt</config>
+                      <config>/opt/android-sdk-linux/tools/proguard/proguard-android.txt</config>
                     </configs>
                   </proguard>
+                  <androidManifestFile>/opt/git-work/classy_xpl/telegen/telegen-application/AndroidManifest.xml</androidManifestFile>
+                  <assetsDirectory>/opt/git-work/classy_xpl/telegen/telegen-application/assets</assetsDirectory>
+                  <resourceDirectory>/opt/git-work/classy_xpl/telegen/telegen-application/res</resourceDirectory>
+                  <nativeLibrariesDirectory>/opt/git-work/classy_xpl/telegen/telegen-application/libs</nativeLibrariesDirectory>
+                  <sdk>
+                    <platform>24</platform>
+                  </sdk>
+                  <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                  <disableConflictingDependenciesWarning>true</disableConflictingDependenciesWarning>
                 </configuration>
               </execution>
               <execution>
@@ -166,6 +218,13 @@
                 <debuggable>false</debuggable>
                 <versionCodeAutoIncrement>true</versionCodeAutoIncrement>
               </manifest>
+              <proguard>
+                <skip>false</skip>
+                <config>proguard.cfg</config>
+                <configs>
+                  <config>${env.ANDROID_HOME}/tools/proguard/proguard-android.txt</config>
+                </configs>
+              </proguard>
             </configuration>
           </plugin>
           <plugin>
@@ -182,12 +241,12 @@
                 <configuration>
                   <artifacts>
                     <artifact>
-                      <file>e:\workspace\xpl\telegen\telegen-application\target/telegen-signed-aligned.apk</file>
+                      <file>/opt/git-work/classy_xpl/telegen/telegen-application/target/telegen-signed-aligned.apk</file>
                       <type>apk</type>
                       <classifier>signed-aligned</classifier>
                     </artifact>
                     <artifact>
-                      <file>e:\workspace\xpl\telegen\telegen-application\target/proguard/mapping.txt</file>
+                      <file>/opt/git-work/classy_xpl/telegen/telegen-application/target/proguard/mapping.txt</file>
                       <type>map</type>
                       <classifier>release</classifier>
                     </artifact>
@@ -198,12 +257,12 @@
             <configuration>
               <artifacts>
                 <artifact>
-                  <file>e:\workspace\xpl\telegen\telegen-application\target/telegen-signed-aligned.apk</file>
+                  <file>/opt/git-work/classy_xpl/telegen/telegen-application/target/telegen-signed-aligned.apk</file>
                   <type>apk</type>
                   <classifier>signed-aligned</classifier>
                 </artifact>
                 <artifact>
-                  <file>e:\workspace\xpl\telegen\telegen-application\target/proguard/mapping.txt</file>
+                  <file>/opt/git-work/classy_xpl/telegen/telegen-application/target/proguard/mapping.txt</file>
                   <type>map</type>
                   <classifier>release</classifier>
                 </artifact>
@@ -220,41 +279,23 @@
       </properties>
     </profile>
   </profiles>
+  <repositories>
+    <repository>
+      <id>android-support</id>
+      <url>file://${env.ANDROID_HOME}/extras/android/m2repository</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>dropbox</id>
+      <url>https://dl.dropboxusercontent.com/u/52711537/maven-repo/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <dependencies>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.2</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.2</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>log4j</artifactId>
-          <groupId>log4j</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
-      <version>1.1.1</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-collections</groupId>
-      <artifactId>commons-collections</artifactId>
-      <version>3.2.1</version>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -294,31 +335,32 @@
     <dependency>
       <groupId>com.j256.ormlite</groupId>
       <artifactId>ormlite-jdbc</artifactId>
-      <version>4.49-SNAPSHOT</version>
+      <version>5.0</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.dagger</groupId>
+      <artifactId>dagger-compiler</artifactId>
+      <version>2.6.1</version>
+      <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>dagger-producers</artifactId>
+          <groupId>com.google.dagger</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>guava</artifactId>
+          <groupId>com.google.guava</groupId>
+        </exclusion>
+      </exclusions>
+      <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.robolectric</groupId>
       <artifactId>robolectric</artifactId>
-      <version>3.0-rc2</version>
+      <version>3.1.2</version>
       <scope>test</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>support-v4</artifactId>
-          <groupId>com.android.support</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>junit-dep</artifactId>
-          <groupId>junit</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>maven-ant-tasks</artifactId>
-          <groupId>org.apache.maven</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>robolectric-annotations</artifactId>
-          <groupId>org.robolectric</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>robolectric-resources</artifactId>
           <groupId>org.robolectric</groupId>
@@ -328,19 +370,7 @@
           <groupId>org.robolectric</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>shadows-core</artifactId>
-          <groupId>org.robolectric</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bcprov-jdk16</artifactId>
-          <groupId>org.bouncycastle</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>asm</artifactId>
-          <groupId>org.ow2.asm</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>asm-commons</artifactId>
           <groupId>org.ow2.asm</groupId>
         </exclusion>
         <exclusion>
@@ -348,55 +378,161 @@
           <groupId>org.ow2.asm</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>asm-commons</artifactId>
+          <groupId>org.ow2.asm</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>asm-analysis</artifactId>
           <groupId>org.ow2.asm</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>commons-codec</artifactId>
-          <groupId>commons-codec</groupId>
+          <artifactId>bcprov-jdk16</artifactId>
+          <groupId>org.bouncycastle</groupId>
         </exclusion>
         <exclusion>
           <artifactId>vtd-xml</artifactId>
           <groupId>com.ximpleware</groupId>
         </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-ant-tasks</artifactId>
-      <version>2.1.3</version>
-      <scope>test</scope>
-      <exclusions>
         <exclusion>
-          <artifactId>*</artifactId>
-          <groupId>*</groupId>
+          <artifactId>xstream</artifactId>
+          <groupId>com.thoughtworks.xstream</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>ant</artifactId>
+          <groupId>org.apache.ant</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>maven-ant-tasks</artifactId>
+          <groupId>org.apache.maven</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>shadows-core-v23</artifactId>
+          <groupId>org.robolectric</groupId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.apache.ant</groupId>
-      <artifactId>ant</artifactId>
-      <version>1.8.0</version>
+      <groupId>org.robolectric</groupId>
+      <artifactId>shadows-support-v4</artifactId>
+      <version>3.1.2</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <artifactId>ant-launcher</artifactId>
-          <groupId>org.apache.ant</groupId>
+          <artifactId>shadows-core-v23</artifactId>
+          <groupId>org.robolectric</groupId>
         </exclusion>
       </exclusions>
     </dependency>
     <dependency>
       <groupId>android</groupId>
       <artifactId>android</artifactId>
-      <version>5.1.1_r2</version>
+      <version>7.0.0_r2</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.android.support</groupId>
-      <artifactId>appcompat-v7</artifactId>
-      <version>22.2</version>
+      <artifactId>support-compat</artifactId>
+      <version>24.2.0</version>
       <scope>system</scope>
-      <systemPath>e:\workspace\xpl\telegen\telegen-application\target\unpacked-libs\cas_appcompat-v7_22.2\classes.jar</systemPath>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-compat_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-compat_internal_impl-24.2.0.jar</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-compat_24.2.0/libs/internal_impl-24.2.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-fragment</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-fragment_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-fragment_internal_impl-24.2.0.jar</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-fragment_24.2.0/libs/internal_impl-24.2.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>animated-vector-drawable</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_animated-vector-drawable_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>appcompat-v7</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_appcompat-v7_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-core-utils</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-core-utils_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-core-utils_internal_impl-24.2.0.jar</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-core-utils_24.2.0/libs/internal_impl-24.2.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-media-compat</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-media-compat_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-media-compat_internal_impl-24.2.0.jar</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-media-compat_24.2.0/libs/internal_impl-24.2.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-v4_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>au.com.cybersearch2</groupId>
+      <artifactId>classy_tools_lib</artifactId>
+      <version>1.3</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/acc_classy_tools_lib_1.3/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-core-ui</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-core-ui_24.2.0/classes.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-core-ui_internal_impl-24.2.0.jar</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-core-ui_24.2.0/libs/internal_impl-24.2.0.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-vector-drawable</artifactId>
+      <version>24.2.0</version>
+      <scope>system</scope>
+      <systemPath>/opt/git-work/classy_xpl/telegen/telegen-application/target/unpacked-libs/cas_support-vector-drawable_24.2.0/classes.jar</systemPath>
     </dependency>
   </dependencies>
 </project>
