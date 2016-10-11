@@ -46,13 +46,6 @@
          https://github.com/simpligility/android-maven-plugin/issues/660  
     <module>telegen-tests</module>-->
   </modules>
-  <!-- This SCM needed for releasing this module on it's own -->
-  <scm>
-    <url>https://github.com/andrew-bowley/classy_apps</url>
-    <connection>scm:git:ssh://git@github.com/andrew-bowley/classy_apps.git</connection>
-    <developerConnection>scm:git:ssh://git@gitserver/opt/git/classy_apps.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
   <dependencyManagement>
 	  <dependencies>
         <dependency>

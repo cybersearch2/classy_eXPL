@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>au.com.cybersearch2</groupId>
-    <artifactId>xpl</artifactId>
-    <version>1.3</version>
-  	<relativePath>../xpl</relativePath>
-  </parent>
+  <groupId>au.com.cybersearch2</groupId>
   <artifactId>classy_xpl</artifactId>
   <version>1.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Classy (eXPL) Parent</name>
   <description>Expression Pattern Language Compiler and Query Engine for Classy Tools</description>
+  <scm>
+    <connection>scm:git:ssh://git@gitserver:/opt/git/classy_xpl.git</connection>
+  </scm>
+  <distributionManagement>
+    <repository>
+        <id>${release.repo.id}</id>
+        <name>repo-releases</name>
+        <url>${release.repo.url}</url>
+    </repository>
+    <snapshotRepository>
+        <id>${snapshot.repo.id}</id>
+        <name>repo-snapshots</name>
+        <url>${snapshot.repo.url}</url>
+    </snapshotRepository>
+  </distributionManagement>  
   <developers>
     <developer>
       <id>andrew-bowley</id>
@@ -35,6 +45,10 @@
   <!-- Ensure Java SDK 6 or higher installed -->
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <release.repo.id>artifactory</release.repo.id>
+    <release.repo.url>http://build.cybersearch2.local/artifactory/libs-release-local</release.repo.url>
+    <snapshot.repo.id>artifactory</snapshot.repo.id>
+    <snapshot.repo.url>http://build.cybersearch2.local/artifactory/libs-snapshot-local</snapshot.repo.url>
     <!-- ANDROID_HOME environment variable -->
     <android.sdk.path>${env.ANDROID_HOME}</android.sdk.path>
     <android.plugin.version>4.4.3</android.plugin.version>
@@ -48,17 +62,42 @@
     <ormlite.version>5.0</ormlite.version>
     <slf4j-version>1.7.2</slf4j-version>
     <dagger.version>2.6.1</dagger.version>
-    <classy_tools.version>1.3</classy_tools.version>
+    <classy_tools.version>1.3.2</classy_tools.version>
   </properties>
   <build>
 	  <finalName>${project.artifactId}</finalName>
  	  <pluginManagement>
 		  <plugins>
- 	     	  <plugin>
+	 		  <plugin>
+				<artifactId>maven-scm-plugin</artifactId>
+				<version>1.9.5</version>
+				<configuration>
+				  <connectionType>connection</connectionType>
+				  <tag>classy-eXPL-${project.version}</tag>
+				</configuration>
+			  </plugin>
+		      <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-deploy-plugin</artifactId>
+		        <version>2.8.2</version>
+		      </plugin>
+	     	  <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
 			    <artifactId>maven-jarsigner-plugin</artifactId>
 			    <version>1.2</version>
 	     	  </plugin>
+			  <plugin>
+				  <artifactId>maven-resources-plugin</artifactId>
+				  <version>2.6</version>
+				  <configuration>
+					  <encoding>UTF-8</encoding>
+				  </configuration>
+			  </plugin>
+	 		  <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-javadoc-plugin</artifactId>
+		        <version>2.10.3</version>
+		      </plugin>
 	          <plugin>
 	            <groupId>com.simpligility.maven.plugins</groupId>
 	            <artifactId>android-maven-plugin</artifactId>
@@ -186,6 +225,11 @@
   <dependencyManagement>
       <dependencies>
          <dependency>
+		   <groupId>au.com.cybersearch2</groupId>
+		   <artifactId>parser</artifactId>
+		   <version>1.3.2</version>
+         </dependency>
+         <dependency>
           <groupId>au.com.cybersearch2</groupId>
           <artifactId>classyutils</artifactId>
           <version>${classy_tools.version}</version>
@@ -230,6 +274,61 @@
           <artifactId>shadows-support-v4</artifactId>
           <version>${robolectric.version}</version>
         </dependency> 
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.12</version>
+        </dependency>
+        <dependency>
+          <groupId>org.mockito</groupId>
+          <artifactId>mockito-core</artifactId>
+          <version>1.10.19</version>
+        </dependency>
+        <dependency>
+          <groupId>org.easytesting</groupId>
+          <artifactId>fest-assert-core</artifactId>
+          <version>2.0M10</version>
+        </dependency>
+        <dependency>
+          <groupId>org.easytesting</groupId>
+          <artifactId>fest-util</artifactId>
+          <version>1.2.5</version>
+        </dependency>
       </dependencies>
   </dependencyManagement>
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-site-plugin</artifactId>
+            <version>3.3</version>
+            <configuration>
+              <reportPlugins>
+                <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <configuration>
+                    <additionalparam>-Xdoclint:none</additionalparam>
+                  </configuration>
+                </plugin>
+              </reportPlugins>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
