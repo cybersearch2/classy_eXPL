@@ -12,11 +12,11 @@ import au.com.cybersearch2.classytask.Executable;
  * @author andrew
  *
  */
-public class CityPersistenceService extends PersistenceWorker 
+public class CityPersistenceWorker extends PersistenceWorker 
 {
 	private ApplicationComponent component;
 
-	public CityPersistenceService(ApplicationComponent component) 
+	public CityPersistenceWorker(ApplicationComponent component) 
 	{
 		super(PersistenceCities.PU_NAME, component.persistenceContext());
 		this.component = component;

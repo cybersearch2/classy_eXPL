@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>au.com.cybersearch2</groupId>
   <artifactId>classy_xpl</artifactId>
-  <version>1.3-SNAPSHOT</version>
+  <version>1.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Classy (eXPL) Parent</name>
   <description>Expression Pattern Language Compiler and Query Engine for Classy Tools</description>
@@ -64,6 +64,17 @@
     <dagger.version>2.6.1</dagger.version>
     <classy_tools.version>1.3.2</classy_tools.version>
   </properties>
+  <repositories>
+    <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <!-- For com.googlecode:openbeans:jar:1.0 -->
+        <id>bintray-melix-thirdparty-apache</id>
+        <name>bintray</name>
+        <url>http://dl.bintray.com/melix/thirdparty-apache</url>
+    </repository>
+  </repositories>  
   <build>
 	  <finalName>${project.artifactId}</finalName>
  	  <pluginManagement>
@@ -120,6 +131,11 @@
 				<artifactId>build-helper-maven-plugin</artifactId>
 				<version>1.8</version>
 			  </plugin>
+    		  <plugin>
+    			<groupId>org.codehaus.mojo</groupId>  
+    			<artifactId>versions-maven-plugin</artifactId>  
+    			<version>2.3</version>  
+    		  </plugin>     
 	          <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
 	          <plugin>
 	            <groupId>org.eclipse.m2e</groupId>
@@ -227,7 +243,7 @@
          <dependency>
 		   <groupId>au.com.cybersearch2</groupId>
 		   <artifactId>parser</artifactId>
-		   <version>1.3.2</version>
+		   <version>$(project.version}</version>
          </dependency>
          <dependency>
           <groupId>au.com.cybersearch2</groupId>

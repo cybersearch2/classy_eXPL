@@ -39,7 +39,8 @@ import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
 public class HighCitiesSorted 
 {
 	static final String CITY_EVELATIONS =
-	        "axiom city (name, altitude): resource \"cities\";\n" + 
+	        "resource \"cities\";\n" + 
+	        "axiom city (name, altitude): \"cities\";\n" + 
             "// Template for name and altitude of a high city\n" +
             "template high_city(string name, altitude ? altitude > 5000);\n" +
             "// Solution is a list named 'city_list' which receives 'high_city' axioms\n" +
@@ -75,9 +76,8 @@ public class HighCitiesSorted
                 DaggerApplicationComponent.builder()
                 .testModule(new TestModule())
                 .build();
-        CityPersistenceService cityPersistenceService = new CityPersistenceService(component);
-		EntityAxiomProvider entityAxiomProvider = new EntityAxiomProvider("cities", new CitiesDatabase());
-		entityAxiomProvider.addEntity("city", City.class, cityPersistenceService); 
+		EntityAxiomProvider entityAxiomProvider = new EntityAxiomProvider("cities", new CityPersistenceWorker(component), new CitiesDatabase());
+		entityAxiomProvider.addEntity("city", City.class); 
 		providerManager = new ProviderManager();
 		providerManager.putAxiomProvider(entityAxiomProvider);
 	}

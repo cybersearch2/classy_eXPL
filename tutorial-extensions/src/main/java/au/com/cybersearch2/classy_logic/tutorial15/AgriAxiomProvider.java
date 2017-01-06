@@ -62,10 +62,10 @@ public class AgriAxiomProvider extends EntityAxiomProvider
 			PersistenceService<Agri10Year> agri10YearService) 
 	{
 	    // Super class will construct TEN_YEAR_AXIOM collector
-		super(PU_NAME, new AgriDatabase());
+		super(PU_NAME, agri10YearService, new AgriDatabase());
 		this.agri10YearService = agri10YearService;
 		//this.persistenceService = persistenceWorker;
-		addEntity(TEN_YEAR_AXIOM, Agri10Year.class, agri10YearService);
+		addEntity(TEN_YEAR_AXIOM, Agri10Year.class);
 		addCollector(PERCENT_AXIOM, new AgriPercentCollector(yearPercentWorker));
 	}
 

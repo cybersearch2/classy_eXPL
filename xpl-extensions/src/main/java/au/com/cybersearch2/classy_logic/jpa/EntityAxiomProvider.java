@@ -31,6 +31,8 @@ import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
 
 /**
  * EntityAxiomProvider
+*  An eXPL resource object which receives and transmits axioms on a connection to a relational database
+*  using Classy Tools JPA.
  * @author Andrew Bowley
  * 23 May 2015
  */
@@ -38,46 +40,58 @@ public class EntityAxiomProvider implements AxiomProvider
 {
     /** Collection of Collectors which each fetch all rows in one database entity table */
     protected Map<String, JpaEntityCollector<?>> collectorMap;
+    /** Helper to perform persistence work */
+    protected PersistenceWorker persistenceWorker;
     /** The optional task to set up the entity table. Intended for testing use only */
     protected PersistenceWork setUpTask;
+    /** Name of provider */
     protected String name;
+    /** Flag set true if database creation completed successfully */
     protected boolean databaseCreated;
 
     /**
      * EntityAxiomProvider
      * @param name Name of provider
+     * @param persistenceWorker Executes tasks
      */
-    public EntityAxiomProvider(String name)
+    public EntityAxiomProvider(String name, PersistenceWorker persistenceWorker)
     {
-        this(name, null);
+        this(name, persistenceWorker, null);
     }
 
     /**
      * EntityAxiomProvider
      * @param persistenceUnit Name of persistence unit defined in persistence.xml configuration file
+     * @param persistenceWorker Executes tasks
      * @param setUpTask PersistenceWork object to perform one-time initialization
      */
-    public EntityAxiomProvider(String name, PersistenceWork setUpTask)
+    public EntityAxiomProvider(String name, PersistenceWorker persistenceWorker, PersistenceWork setUpTask)
     {
         this.name = name;
+        // TODO - validate parameters
+        this.persistenceWorker = persistenceWorker;
+        this.setUpTask = setUpTask;
         collectorMap = Collections.emptyMap();
         if (setUpTask == null)
             databaseCreated = true;
-        else
-            this.setUpTask = setUpTask;
     }
 
     /**
-     * 
+     * Associate Entity Class with axiom name 
      * @param axiomName
-     * @param entityClass Class of entity to be collected
+     * @param entityClass Entity class
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	public void addEntity(String axiomName, Class<?> entityClass, PersistenceWorker persistenceService)
+	public void addEntity(String axiomName, Class<?> entityClass)
     {
-        addCollector(axiomName, new JpaEntityCollector(entityClass, persistenceService));
+        addCollector(axiomName, new JpaEntityCollector(entityClass, persistenceWorker));
     }
-    
+
+    /**
+     * Associate Entity Collector with axiom name
+     * @param axiomName
+     * @param jpaEntityCollector JpaEntityCollector object
+     */
 	public void addCollector(String axiomName, JpaEntityCollector<?> jpaEntityCollector)
     {
         if (collectorMap.size() == 0)
@@ -87,6 +101,7 @@ public class EntityAxiomProvider implements AxiomProvider
     
     /**
      * Returns Axiom Provider identity, which defaults to PersistenceUnitAdmin Unit name
+     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#getName
      */
     @Override
     public String getName() 
@@ -95,47 +110,32 @@ public class EntityAxiomProvider implements AxiomProvider
     }
 
     /**
-     * Initialize Axiom Provider
-     * @param axiomName Axiom key (not used)
+     * Open Axiom Provider
      * @param properties Optional properties to add to the persistence unit properties
-     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#setResourceProperties(java.lang.String, java.util.Map)
+     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#open(java.util.Map)
      */
     @Override
-    public void setResourceProperties(String axiomName, Map<String, Object> properties) 
+    public void open(Map<String, Object> properties) 
     {
-    	JpaEntityCollector<?> collector = collectorMap.get(axiomName);
-    	if (collector == null)
-    		throw new IllegalArgumentException("AxiomProvider " + name + ": no collector found with name " + axiomName);
-    	PersistenceWorker persistenceService = collector.getPersistenceService();
         // If properties provide, add them to the persistence unit's properties
         if (properties != null)
-        	persistenceService.getPersistenceContext()
-        	.getPersistenceAdmin(persistenceService.getPersistenceUnit())
+        	persistenceWorker.getPersistenceContext()
+        	.getPersistenceAdmin(persistenceWorker.getPersistenceUnit())
         	.getProperties()
         	.putAll(properties);
         if ((setUpTask != null) && !databaseCreated)
-        {
-            // Execute work and wait synchronously for completion
-            try 
-            {
-            	persistenceService.doWork(setUpTask).waitForTask();
-                databaseCreated = true;
-            } 
-            catch (InterruptedException e) 
-            {
-                e.printStackTrace();
-            }
-        }
+            createDatabase();
     }
 
     /**
-     * 
      * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#getAxiomSource(java.lang.String, java.util.List)
      */
     @Override
     public AxiomSource getAxiomSource(String axiomName,
             List<String> axiomTermNameList) 
     {
+        if ((setUpTask != null) && !databaseCreated)
+            createDatabase();
         if (isEmpty())
             throw new QueryExecutionException("No axiomSource available for \"" + axiomName + "\"");
         List<NameMap> nameMapList = new ArrayList<NameMap>();
@@ -145,12 +145,18 @@ public class EntityAxiomProvider implements AxiomProvider
         return new JpaSource(jpaEntityCollector, axiomName, nameMapList);
     }
 
+    /**
+     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#isEmpty()
+     */
     @Override
     public boolean isEmpty() 
     {
         return !databaseCreated && (collectorMap.size() > 0);
     }
 
+    /**
+     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#getAxiomListener()
+     */
     @Override
     public AxiomListener getAxiomListener() 
     {   // Do-nothing listener for read-only provider
@@ -162,4 +168,32 @@ public class EntityAxiomProvider implements AxiomProvider
             }
         };
     }
+
+    /**
+     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#close()
+     */
+    @Override
+    public void close()
+    {
+    }
+
+    /**
+     * Execute setup task to create database 
+     */
+    synchronized private void createDatabase()
+    {
+        if (!databaseCreated)
+        {
+            // Execute work and wait synchronously for completion
+            try 
+            {
+                persistenceWorker.doWork(setUpTask).waitForTask();
+                databaseCreated = true;
+            } 
+            catch (InterruptedException e) 
+            {
+            }
+        }
+    }
+    
 }

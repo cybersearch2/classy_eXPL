@@ -134,7 +134,6 @@ public class HighCitiesJpaTest
             }
         };
         // Execute work and wait synchronously for completion
-        // Execute work and wait synchronously for completion
         getExecutable(setUpWork).waitForTask();
     }
 

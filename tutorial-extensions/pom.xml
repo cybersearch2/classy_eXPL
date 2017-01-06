@@ -3,7 +3,7 @@
   <parent>
     <groupId>au.com.cybersearch2</groupId>
     <artifactId>classy_xpl</artifactId>
-    <version>1.3-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>tutorial-extensions</artifactId>
   <name>tutorial-extensions</name>
@@ -21,7 +21,7 @@
     <dependency>
       <groupId>au.com.cybersearch2</groupId>
       <artifactId>parser</artifactId>
-      <version>${classy_tools.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>au.com.cybersearch2</groupId>

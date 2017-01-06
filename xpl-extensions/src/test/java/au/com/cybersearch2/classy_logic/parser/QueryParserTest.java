@@ -67,7 +67,8 @@ public class QueryParserTest
     /** PersistenceUnitAdmin Unit name to look up configuration details in persistence.xml */
     static public final String PU_NAME = "cities";
 	static final String HIGH_CITIES_JPA_XPL =
-			"axiom city (name, altitude): resource \"cities\";\n" +
+	        "resource \"cities\";\n" +
+			"axiom city (name, altitude): \"cities\";\n" +
 			"template high_city(string name, altitude ? altitude > 5000);\n"
 			;
 

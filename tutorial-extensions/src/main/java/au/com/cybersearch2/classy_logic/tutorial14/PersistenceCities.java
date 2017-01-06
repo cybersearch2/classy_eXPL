@@ -60,8 +60,8 @@ public class PersistenceCities
         PersistenceWork setUpWork = new CitiesDatabase();
         // Execute work and wait synchronously for completion
         getExecutable(setUpWork).waitForTask();
-        CityPersistenceService cityPersistenceService = new CityPersistenceService(component);
-        cityCollector = new JpaEntityCollector<City>(City.class, cityPersistenceService);
+        CityPersistenceWorker cityPersistenceWorker = new CityPersistenceWorker(component);
+        cityCollector = new JpaEntityCollector<City>(City.class, cityPersistenceWorker);
 	}
 
 	/**

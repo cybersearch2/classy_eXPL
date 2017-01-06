@@ -62,7 +62,6 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
     protected Class<E> entityClass;
 
     /**
-     * Construct a JpaEntityCollector object
      * Construct a JpaEntityCollector object for a specific entity class.
      * This maps all the class fields with a supported type to axiom terms
      * @param entityClass Class of entity to be collected

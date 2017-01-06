@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>au.com.cybersearch2</groupId>
 		<artifactId>telegen-parent</artifactId>
-		<version>1.3-SNAPSHOT</version>
+		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>telegen</artifactId>
 	<packaging>apk</packaging>
@@ -86,7 +86,7 @@
         <dependency>
           <groupId>au.com.cybersearch2</groupId>
           <artifactId>parser</artifactId>
-          <version>${classy_tools.version}</version>
+          <version>${project.version}</version>
           <exclusions>
              <exclusion>
               <groupId>*</groupId>
