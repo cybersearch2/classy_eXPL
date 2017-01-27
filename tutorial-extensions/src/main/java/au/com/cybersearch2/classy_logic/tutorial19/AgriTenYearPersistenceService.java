@@ -1,7 +1,7 @@
 /**
  * 
  */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.tutorial19;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -20,13 +20,13 @@ import au.com.cybersearch2.classytask.Executable;
 public class AgriTenYearPersistenceService extends PersistenceService<Agri10Year> 
 {
 	private ApplicationComponent component;
-	protected AtomicInteger referenceCount;
-	
+    protected AtomicInteger referenceCount;
+
 	public AgriTenYearPersistenceService(ApplicationComponent component) 
 	{
-		super(IncreasedAgriculture2.PU_NAME, component.persistenceContext());
+		super(IncreasedAgriculture3.PU_NAME, component.persistenceContext());
 		this.component = component;
-		referenceCount = new AtomicInteger();
+        referenceCount = new AtomicInteger();
 	}
 
     public int incrementCount()
@@ -65,7 +65,7 @@ public class AgriTenYearPersistenceService extends PersistenceService<Agri10Year
         @Override
 	    public void doTask(EntityManagerLite entityManager)
 	    {
-		    entityManager.persist(agri10Year);
+		   	entityManager.persist(agri10Year);
 	    }
 
 	    @Override
@@ -92,11 +92,11 @@ public class AgriTenYearPersistenceService extends PersistenceService<Agri10Year
 		try 
 		{
 			doWork(new PersistAgri10Year(entity)).waitForTask();
-			if (referenceCount.decrementAndGet() == 0)
-			    synchronized(this)
-			    {
-			        notifyAll();
-			    }
+            if (referenceCount.decrementAndGet() == 0)
+                synchronized(this)
+                {
+                    notifyAll();
+                }
 		} 
 		catch (InterruptedException e) 
 		{
@@ -109,7 +109,7 @@ public class AgriTenYearPersistenceService extends PersistenceService<Agri10Year
 	@Override
 	public Executable doWork(PersistenceWork persistenceWork) 
 	{
-    	PersistenceWorkModule persistenceWorkModule = new PersistenceWorkModule(IncreasedAgriculture2.PU_NAME, true, persistenceWork);
+    	PersistenceWorkModule persistenceWorkModule = new PersistenceWorkModule(IncreasedAgriculture3.PU_NAME, true, persistenceWork);
         return component.plus(persistenceWorkModule).executable();
 	}
 

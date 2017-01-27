@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import au.com.cybersearch2.classy_logic.parser.ParseException;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
-import au.com.cybersearch2.classy_logic.tutorial14.HighCitiesSorted;
+import au.com.cybersearch2.classy_logic.tutorial14.HighCitiesSorted2;
 
 /**
  * HighCitiesSortedTest
@@ -43,8 +43,8 @@ public class HighCitiesSortedTest
     @Test
     public void test_HighCitiesSorted() throws SQLException, ParseException, InterruptedException
     {
-        HighCitiesSorted highCitiesSorted = new HighCitiesSorted();
-        Iterator<Axiom> iterator = highCitiesSorted.getHighCities();
+        HighCitiesSorted2 highCitiesSorted2 = new HighCitiesSorted2();
+        Iterator<Axiom> iterator = highCitiesSorted2.getHighCities();
         assertThat(iterator.next().toString()).isEqualTo("high_city(name = denver, altitude = 5280)");
         assertThat(iterator.next().toString()).isEqualTo("high_city(name = flagstaff, altitude = 6970)");
         assertThat(iterator.next().toString()).isEqualTo("high_city(name = addis ababa, altitude = 8000)");

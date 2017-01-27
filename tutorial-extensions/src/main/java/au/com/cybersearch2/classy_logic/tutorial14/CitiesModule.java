@@ -13,22 +13,21 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.tutorial14;
 
-import javax.inject.Singleton;
-
-import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
-import au.com.cybersearch2.classyjpa.persist.PersistenceContext;
-import dagger.Component;
+import au.com.cybersearch2.classy_logic.TestModule;
+import dagger.Module;
 
 /**
+ * CitiesModule
  * @author Andrew Bowley
- *
+ * 25Jan.,2017
  */
-@Singleton
-@Component(modules = AgriModule.class)  
-public interface ApplicationComponent 
+@Module
+public class CitiesModule extends TestModule
 {
-    PersistenceContext persistenceContext();
-    PersistenceWorkSubcontext plus(PersistenceWorkModule persistenceWorkModule);
+    public CitiesModule()
+    {
+        super("src/main/resources/tutorial14");
+    }
 }

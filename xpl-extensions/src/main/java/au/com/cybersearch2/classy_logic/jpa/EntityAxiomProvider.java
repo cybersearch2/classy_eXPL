@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomListener;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomProvider;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
@@ -158,12 +159,12 @@ public class EntityAxiomProvider implements AxiomProvider
      * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#getAxiomListener()
      */
     @Override
-    public AxiomListener getAxiomListener() 
+    public AxiomListener getAxiomListener(String name) 
     {   // Do-nothing listener for read-only provider
         return new AxiomListener()
         {
             @Override
-            public void onNextAxiom(Axiom axiom) 
+            public void onNextAxiom(QualifiedName qname, Axiom axiom) 
             {
             }
         };

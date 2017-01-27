@@ -21,7 +21,6 @@ import java.util.Iterator;
 import au.com.cybersearch2.classy_logic.ProviderManager;
 import au.com.cybersearch2.classy_logic.QueryProgram;
 import au.com.cybersearch2.classy_logic.Result;
-import au.com.cybersearch2.classy_logic.TestModule;
 import au.com.cybersearch2.classy_logic.expression.ExpressionException;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider;
@@ -36,7 +35,7 @@ import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
  * @author Andrew Bowley
  * 20 Feb 2015
  */
-public class HighCitiesSorted 
+public class HighCitiesSorted2 
 {
 	static final String CITY_EVELATIONS =
 	        "resource \"cities\";\n" + 
@@ -70,11 +69,11 @@ public class HighCitiesSorted
 	private ProviderManager providerManager;
     private ApplicationComponent component;
 
-	public HighCitiesSorted() throws InterruptedException
+	public HighCitiesSorted2() throws InterruptedException
 	{
         component = 
                 DaggerApplicationComponent.builder()
-                .testModule(new TestModule())
+                .citiesModule(new CitiesModule())
                 .build();
 		EntityAxiomProvider entityAxiomProvider = new EntityAxiomProvider("cities", new CityPersistenceWorker(component), new CitiesDatabase());
 		entityAxiomProvider.addEntity("city", City.class); 
@@ -103,7 +102,7 @@ public class HighCitiesSorted
 	{
 		try 
 		{
-	        HighCitiesSorted highCities = new HighCitiesSorted();
+	        HighCitiesSorted2 highCities = new HighCitiesSorted2();
 			Iterator<Axiom> iterator = highCities.getHighCities();
 	        while(iterator.hasNext())
 	            System.out.println(iterator.next().toString());

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import au.com.cybersearch2.classy_logic.TestModule;
 import au.com.cybersearch2.classy_logic.jpa.JpaEntityCollector;
 import au.com.cybersearch2.classy_logic.jpa.JpaSource;
 import au.com.cybersearch2.classy_logic.jpa.NameMap;
@@ -55,7 +54,7 @@ public class PersistenceCities
 	{
         component = 
                 DaggerApplicationComponent.builder()
-                .testModule(new TestModule())
+                .citiesModule(new CitiesModule())
                 .build();
         PersistenceWork setUpWork = new CitiesDatabase();
         // Execute work and wait synchronously for completion

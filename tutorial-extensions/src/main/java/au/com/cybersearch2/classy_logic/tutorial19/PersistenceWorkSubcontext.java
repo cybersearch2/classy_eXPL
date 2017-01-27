@@ -13,22 +13,17 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.tutorial19;
 
 import javax.inject.Singleton;
 
 import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
-import au.com.cybersearch2.classyjpa.persist.PersistenceContext;
-import dagger.Component;
+import au.com.cybersearch2.classytask.Executable;
+import dagger.Subcomponent;
 
-/**
- * @author Andrew Bowley
- *
- */
 @Singleton
-@Component(modules = AgriModule.class)  
-public interface ApplicationComponent 
+@Subcomponent(modules = PersistenceWorkModule.class)
+public interface PersistenceWorkSubcontext 
 {
-    PersistenceContext persistenceContext();
-    PersistenceWorkSubcontext plus(PersistenceWorkModule persistenceWorkModule);
+    Executable executable();
 }

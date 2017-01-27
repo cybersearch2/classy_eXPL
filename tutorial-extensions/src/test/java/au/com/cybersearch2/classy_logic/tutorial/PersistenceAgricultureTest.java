@@ -26,13 +26,13 @@ import java.util.Iterator;
 import org.junit.Test;
 
 import au.com.cybersearch2.classy_logic.QueryProgram;
+import au.com.cybersearch2.classy_logic.agriculture.Agriculture;
 import au.com.cybersearch2.classy_logic.compile.ParserAssembler;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
 import au.com.cybersearch2.classy_logic.parser.ParseException;
 import au.com.cybersearch2.classy_logic.parser.QueryParser;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
-import au.com.cybersearch2.classy_logic.tutorial15.PersistenceAgriculture;
 
 
 /**
@@ -53,7 +53,7 @@ public class PersistenceAgricultureTest
     public void test_PersistenceAgriculture() throws SQLException, ParseException, InterruptedException
     {
         ParserAssembler parserAssembler = null;
-        PersistenceAgriculture ariculture = new PersistenceAgriculture();
+        Agriculture ariculture = new Agriculture();
         try 
         {
             parserAssembler = openScript("include \"agriculture-land.xpl\";");

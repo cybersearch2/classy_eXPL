@@ -17,7 +17,6 @@ package au.com.cybersearch2.classy_logic.tutorial14;
 
 import javax.inject.Singleton;
 
-import au.com.cybersearch2.classy_logic.TestModule;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
 import au.com.cybersearch2.classyjpa.persist.PersistenceContext;
 import dagger.Component;
@@ -27,7 +26,7 @@ import dagger.Component;
  *
  */
 @Singleton
-@Component(modules = TestModule.class)  
+@Component(modules = CitiesModule.class)  
 public interface ApplicationComponent 
 {
     PersistenceContext persistenceContext();

@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.agriculture;
 
 
 import java.util.ArrayList;
@@ -29,28 +29,22 @@ import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
 
 /**
  * AgriPercentCollector extends JpaEntityCollector to create an external axiom source
- * for   axioms translated from    JPA entity objects. The data is
- * obtained from "" named query.
-
+ * for axioms translated from JPA entity objects. The data is obtained from "" named query.
  * @author Andrew Bowley
  * 10 Feb 2015
  */
-public class AgriPercentCollector extends JpaEntityCollector<YearPercent> 
+public class AgriPercentCollector extends JpaEntityCollector<AgriAreaPercent> 
 {
-    protected YearPercent yearPercent;
-    protected Data fact;
-    protected BeanMap beanMap;
-    protected String currentCountry = "";
-    protected Collection<YearPercent> yearPercentList;
+    protected Collection<AgriAreaPercent> yearPercentList;
     
 	/**
 	 * 
 	 */
-	public AgriPercentCollector(PersistenceWorker persistenceService) 
+	public AgriPercentCollector(PersistenceWorker persistenceWorker) 
 	{
-		super(YearPercent.class, persistenceService);
+		super(AgriAreaPercent.class, persistenceWorker);
 		setUserTransactionMode(true);
-    	setMaxResults(48 * 10); // Batch size 10
+    	setMaxResults(10); // Batch size 10
     	batchMode = true;
 	}
 
@@ -67,7 +61,7 @@ public class AgriPercentCollector extends JpaEntityCollector<YearPercent>
         	query.setMaxResults(maxResults);
         	query.setFirstResult(startPosition);
         }
-        yearPercentList = (Collection<YearPercent>) query.getResultList();
+        yearPercentList = (Collection<AgriAreaPercent>) query.getResultList();
 	}
 	
 	@Override
@@ -76,43 +70,28 @@ public class AgriPercentCollector extends JpaEntityCollector<YearPercent>
         startPosition += yearPercentList.size();
 		//System.out.println("Size = " + yearPercentList.size() + ", Position = " + startPosition);
         // Collate into country list
-        Iterator<YearPercent> iterator = yearPercentList.iterator();
+        Iterator<AgriAreaPercent> iterator = yearPercentList.iterator();
         if (!iterator.hasNext())
         {
         	yearPercentList.clear();
-        	if (moreExpected)
-        	{
-        		moreExpected = false;
-    			if (data == null)
-    				data = new ArrayList<Object>();
-    			data.add(fact);
-         	}
+        	moreExpected = false;
    			return;
         }
         while (iterator.hasNext())
         {
-        	yearPercent = iterator.next();
-        	String year = yearPercent.getYear();
-        	String country = yearPercent.getCountry().getCountry();
-        	if (!currentCountry.equals(country))
-        	{
-        		currentCountry = country;
-        		if (fact != null)
-        		{
-        			if (data == null)
-        				data = new ArrayList<Object>();
-        			data.add(fact);
-        		}
-        		fact = new Data();
-        		fact.setCountry(country);
-        		beanMap = new BeanMap(fact);
-        	}
-        	// Sqlite does not support NaN. So use special value "-0.001" to indicate NaN
-        	if (Double.valueOf(-0.001).equals(yearPercent.getPercent()))
-        		yearPercent.setPercent(Double.NaN);
-        	if ((year == null) || (yearPercent == null))
-        	    System.out.println("Eureka!");
-        	beanMap.put(year, yearPercent.getPercent());
+            AgriAreaPercent agriAreaPercent = iterator.next();
+            BeanMap beanMap = new BeanMap(agriAreaPercent);
+            for (int year = 1962; year <= 2010; year++)
+            {
+                String yearName = "y" + year;
+                Double percent = (Double) beanMap.get(yearName);
+                // Sqlite does not support NaN. So use special value "-0.001" to indicate NaN
+                if (Double.valueOf(-0.001).equals(percent))
+                    beanMap.put(yearName, Double.NaN);
+            }
+            if (data == null)
+                data = new ArrayList<Object>();
+            data.add(agriAreaPercent);
         }
         yearPercentList.clear();
     	moreExpected = true;

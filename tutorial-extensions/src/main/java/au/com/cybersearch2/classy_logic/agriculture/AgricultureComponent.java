@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.agriculture;
 
 import javax.inject.Singleton;
 
@@ -26,8 +26,8 @@ import dagger.Component;
  *
  */
 @Singleton
-@Component(modules = AgriModule.class)  
-public interface ApplicationComponent 
+@Component(modules = AgricultureModule.class)  
+public interface AgricultureComponent 
 {
     PersistenceContext persistenceContext();
     PersistenceWorkSubcontext plus(PersistenceWorkModule persistenceWorkModule);

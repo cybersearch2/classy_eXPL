@@ -13,22 +13,23 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.agriculture;
 
-import javax.inject.Singleton;
-
-import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
-import au.com.cybersearch2.classyjpa.persist.PersistenceContext;
-import dagger.Component;
+import au.com.cybersearch2.classy_logic.TestModule;
+import au.com.cybersearch2.classydb.DatabaseSupport.ConnectionType;
+import dagger.Module;
 
 /**
+ * AgricultureModule
  * @author Andrew Bowley
- *
+ * 25Jan.,2017
  */
-@Singleton
-@Component(modules = AgriModule.class)  
-public interface ApplicationComponent 
+@Module
+public class AgricultureModule extends TestModule
 {
-    PersistenceContext persistenceContext();
-    PersistenceWorkSubcontext plus(PersistenceWorkModule persistenceWorkModule);
+    public AgricultureModule()
+    {
+        super("src/main/resources/agriculture");
+        setConnectionType(ConnectionType.file);
+    }
 }

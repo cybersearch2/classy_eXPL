@@ -26,7 +26,7 @@ import java.util.Iterator;
 import org.junit.Test;
 
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
-import au.com.cybersearch2.classy_logic.tutorial15.IncreasedAgriculture;
+import au.com.cybersearch2.classy_logic.tutorial15.IncreasedAgriculture2;
 
 /**
  * IncreasedAgricultureTest
@@ -39,10 +39,11 @@ public class IncreasedAgricultureTest
     @Test
     public void test_IncreasedAgriculture() throws Exception
     {
-        IncreasedAgriculture increasedAgriculture = new IncreasedAgriculture();
-        Iterator<Axiom> iterator = increasedAgriculture.displayIncreasedAgri();
+        IncreasedAgriculture2 increasedAgriculture2 = new IncreasedAgriculture2();
+        Iterator<Axiom> iterator = increasedAgriculture2.displayIncreasedAgri();
         File testFile = new File("src/main/resources", "increased-agri-list.txt");
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(testFile), "UTF-8"));
+        assertThat(iterator.hasNext()).isTrue();
         while(iterator.hasNext())
         {
             String line = reader.readLine();

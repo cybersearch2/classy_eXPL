@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.0">
+    <persistence-unit name="agri_10_year">
+       <class>au.com.cybersearch2.classy_logic.tutorial19.Agri10Year</class>
+       <property name="database-name" value="agri_10_year.db"/>
+   </persistence-unit>
+</persistence>

@@ -6,10 +6,4 @@
        <class>au.com.cybersearch2.classy_logic.tutorial14.City</class>
        <property name="database-name" value="cities.db"/>
    </persistence-unit>
-    <persistence-unit name="agriculture">
-       <class>au.com.cybersearch2.classy_logic.agriculture.Country</class>
-       <class>au.com.cybersearch2.classy_logic.agriculture.YearPercent</class>
-       <class>au.com.cybersearch2.classy_logic.tutorial15.Agri10Year</class>
-       <property name="database-name" value="agriculture.db"/>
-   </persistence-unit>
 </persistence>

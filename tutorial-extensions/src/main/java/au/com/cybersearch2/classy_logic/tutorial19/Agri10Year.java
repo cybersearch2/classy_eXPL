@@ -13,7 +13,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
-package au.com.cybersearch2.classy_logic.tutorial15;
+package au.com.cybersearch2.classy_logic.tutorial19;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -80,7 +80,7 @@ public class Agri10Year
 	/**
 	 * @return the country name
 	 */
-	public String getCountry () 
+	public String getCountry() 
 	{
 		return country;
 	}

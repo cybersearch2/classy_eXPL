@@ -16,70 +16,67 @@
 package au.com.cybersearch2.classy_logic.tutorial15;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import au.com.cybersearch2.classy_logic.ProviderManager;
 import au.com.cybersearch2.classy_logic.QueryProgram;
-import au.com.cybersearch2.classy_logic.Result;
-import au.com.cybersearch2.classy_logic.TestModule;
 import au.com.cybersearch2.classy_logic.expression.ExpressionException;
-import au.com.cybersearch2.classy_logic.helper.QualifiedName;
+import au.com.cybersearch2.classy_logic.jpa.JpaEntityCollector;
+import au.com.cybersearch2.classy_logic.jpa.JpaSource;
+import au.com.cybersearch2.classy_logic.jpa.NameMap;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
-import au.com.cybersearch2.classyjpa.persist.PersistenceService;
-import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
 
 /**
- * IncreasedAgriculture demonstrates Axiom Provider writing query results to a database.
+ * IncreasedAgriculture2 demonstrates Axiom Provider writing query results to a database.
  * Two queries are executed. The first produces a list of countries which have increased the area
  * under agriculture by more than 1% over the twenty years between 1990 and 2010. This query writes
  * it's results to a database table. The second query reads this table and prints it's contents row by row. 
  * @author Andrew Bowley
  * 20 Feb 2015
  */
-public class IncreasedAgriculture 
+public class IncreasedAgriculture2 
 {
 	static final String AGRICULTURAL_LAND = 
-	    "resource \"agriculture\";\n" +
-		"axiom Data() : \"agriculture\";\n" +
+	    "include \"agriculture-land.xpl\";" +
 		"include \"surface-land.xpl\";\n" +
 	    "template agri_10y (country ? y2010 - y1990 > 1.0, double y1990, double y2010);\n" +
-		"template surface_area_increase (country ? country == agri_10y.country, double surface_area = (agri_10y.y2010 - agri_10y.y1990)/100 * surface_area_Km2);\n" +
+		"template surface_area_increase\n" +
+		"(\n" +
+		"  country ? country == agri_10y.country,\n" +
+		"  double surface_area = (agri_10y.y2010 - agri_10y.y1990)/100 * surface_area_Km2\n" +
+		");\n" +
 	    "// Specify term list which writes to persistence resource 'agriculture'\n" +
-		"list<term> surface_area_axiom(surface_area_increase : \"agriculture\");\n" +
-	    "query more_agriculture(Data : agri_10y, surface_area : surface_area_increase);"; 
+		"list<term> surface_area_list(surface_area_increase : \"agriculture\");\n" +
+	    "query more_agriculture(agri_area_percent : agri_10y, surface_area : surface_area_increase);"; 
 
-	static final String AGRI_10_YEAR =
-	    "resource \"agriculture\";\n" +
-		"axiom surface_area_increase (country, surface_area, id) : \"agriculture\";\n" +
-	    "template increased(country, surface_area, id);\n" +
-		"list increased_list(increased);\n" +
-		"query increased_query(surface_area_increase : increased);";
-	
+    /** PersistenceUnitAdmin Unit name to look up configuration details in persistence.xml */
+    static public final String PU_NAME = "agri_10_year";
+
 	/** ProviderManager is Axiom source for eXPL compiler */
 	private ProviderManager providerManager;
     private ApplicationComponent component;
+    private AgriTenYearPersistenceService agri10YearService;
 
 	/**
-	 * Construct IncreasedAgriculture object
+	 * Construct IncreasedAgriculture2 object
 	 */
-	public IncreasedAgriculture()
+	public IncreasedAgriculture2()
 	{
         component = 
                 DaggerApplicationComponent.builder()
-                .testModule(new TestModule())
+                .agriModule(new AgriModule())
                 .build();
-		PersistenceWorker yearPercentService = 
-				new AgriYearPercentPersistenceService(component); 
-		PersistenceService<Agri10Year> agri10YearService = 
+		agri10YearService = 
 				new AgriTenYearPersistenceService(component);  
 		providerManager = new ProviderManager();
-		providerManager.putAxiomProvider(new AgriAxiomProvider(yearPercentService,agri10YearService ));
+		providerManager.putAxiomProvider(new AgriAxiomProvider(agri10YearService ));
 	}
 	
 	/**
 	 * Compiles the AGRICULTURAL_LAND script and runs the "more_agriculture" query, 
-	 * then compiles the AGRI_10_YEAR script and runs the "increased_query" query,
 	 * displaying the solution on the console.<br/>
 	 * The expected result first 3 lines:<br/>
         increased(country = Albania, surface_area = 986.1249999999999, id = 0)<br/>
@@ -101,14 +98,41 @@ public class IncreasedAgriculture
 				System.out.println(solution.getAxiom("surface_area_increase").toString());
 				return true;
 			}}*/);
-		QueryProgram queryProgram2 = new QueryProgram(providerManager);
-		queryProgram2.setResourceBase(new File("src/main/resources"));
-		queryProgram2.parseScript(AGRI_10_YEAR);
-		Result result = queryProgram2.executeQuery("increased_query");
-		return result.getIterator(QualifiedName.parseGlobalName("increased_list"));
+		// Wait for the service quere to clear,
+		waitForService();
+		List<NameMap> nameMapList = getNameMapList();
+		JpaEntityCollector<Agri10Year> collector = 
+		    new JpaEntityCollector<Agri10Year>(Agri10Year.class, agri10YearService);
+		JpaSource jpaSource = new JpaSource(collector, "surface_area_increase", nameMapList);
+        return jpaSource.iterator();
 	}
 
-	/**
+	private List<NameMap> getNameMapList()
+    {
+        List<NameMap> nameMapList = new ArrayList<NameMap>();
+        nameMapList.add(new NameMap(Agri10Year.COUNTRY_TERM, "country"));
+        nameMapList.add(new NameMap(Agri10Year.SURFACE_AREA_TERM, "surfaceArea"));
+        nameMapList.add(new NameMap("id", "id"));
+        return nameMapList;
+    }
+
+    private void waitForService()
+    {
+        if (agri10YearService.getCount() > 0)
+            synchronized(agri10YearService)
+            {
+                try
+                {
+                    agri10YearService.wait();
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+    }
+
+    /**
 	 * Run tutorial
 	 * @param args
 	 */
@@ -116,7 +140,7 @@ public class IncreasedAgriculture
 	{
 		try 
 		{
-	        IncreasedAgriculture increasedAgri = new IncreasedAgriculture();
+	        IncreasedAgriculture2 increasedAgri = new IncreasedAgriculture2();
 		    Iterator<Axiom> iterator = increasedAgri.displayIncreasedAgri();
             while(iterator.hasNext())
                 System.out.println(iterator.next().toString());

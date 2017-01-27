@@ -38,8 +38,27 @@ import dagger.Provides;
 @Module
 public class TestModule 
 {
+    public TestModule()
+    {
+        resourcePath = "src/main/resources";
+        connectionType = ConnectionType.memory;
+    }
+    
+    protected TestModule(String resourcePath)
+    {
+        this.resourcePath = resourcePath;
+        connectionType = ConnectionType.memory;
+    }
+    
     private SQLiteDatabaseSupport sqliteDatabaseSupport;
+    private String resourcePath;
+    private ConnectionType connectionType;
 
+    public void setConnectionType(ConnectionType connectionType)
+    {
+        this.connectionType = connectionType;
+    }
+    
     @Provides @Singleton ThreadHelper provideSystemEnvironment()
     {
         return new TestSystemEnvironment();
@@ -52,12 +71,12 @@ public class TestModule
 
     @Provides @Singleton ResourceEnvironment provideResourceEnvironment()
     {
-        return new JavaTestResourceEnvironment("src/main/resources");
+        return new JavaTestResourceEnvironment(resourcePath);
     }
 
     @Provides @Singleton DatabaseSupport provideDatabaseSupport()
     {
-        sqliteDatabaseSupport = new SQLiteDatabaseSupport(ConnectionType.memory);
+        sqliteDatabaseSupport = new SQLiteDatabaseSupport(connectionType);
         return sqliteDatabaseSupport;    
     }
     
