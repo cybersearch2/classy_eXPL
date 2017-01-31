@@ -21,7 +21,6 @@
     <dependency>
       <groupId>au.com.cybersearch2</groupId>
       <artifactId>parser</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>au.com.cybersearch2</groupId>

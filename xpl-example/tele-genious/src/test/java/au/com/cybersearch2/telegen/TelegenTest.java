@@ -98,8 +98,8 @@ public class TelegenTest
     
  */
     static public final String TELEGEN_XPL =
-        "axiom issue() : resource \"telegen\";\n" +
-        "axiom check() : resource \"telegen\";\n" +
+        "axiom issue() : \"telegen\";\n" +
+        "axiom check() : \"telegen\";\n" +
         "axiom issue_param(issue_name): parameter;\n" +
         "axiom check_param(check_name): parameter;\n" +
         "template issue (name, observation);\n" +
@@ -145,19 +145,13 @@ public class TelegenTest
         getExecutable(new TestIssues()).waitForTask();
         getExecutable(new TestChecks()).waitForTask();
         providerManager = new ProviderManager();
-        PersistenceWorker issueWorker = new PersistenceWorker(PU_NAME, component.persistenceContext()){
+        PersistenceWorker persistenceWorker = new PersistenceWorker(PU_NAME, component.persistenceContext()){
 
 			@Override
 			public Executable doWork(PersistenceWork persistenceWork) {
 				return getExecutable(persistenceWork);
 			}};
-        PersistenceWorker checkWorker = new PersistenceWorker(PU_NAME, component.persistenceContext()){
-
-            @Override
-            public Executable doWork(PersistenceWork persistenceWork) {
-                return getExecutable(persistenceWork);
-            }};
-       providerManager.putAxiomProvider(new TelegenAxiomProvider(issueWorker, checkWorker));
+       providerManager.putAxiomProvider(new TelegenAxiomProvider(persistenceWorker));
     }
     
     @Test

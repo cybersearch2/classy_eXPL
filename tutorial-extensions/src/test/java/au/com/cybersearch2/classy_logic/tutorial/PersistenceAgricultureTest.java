@@ -62,10 +62,10 @@ public class PersistenceAgricultureTest
         {
             throw new IllegalStateException("Error compiling \"agriculture-land.xpl\"", e);
         }
-        AxiomSource agriSource = parserAssembler.getAxiomSource(QualifiedName.parseGlobalName("Data"));
+        AxiomSource agriSource = parserAssembler.getAxiomSource(QualifiedName.parseGlobalName("agri_area_percent"));
         Iterator<Axiom> dataIterator = agriSource.iterator();
         Iterator<Axiom>  aricultureIterator = ariculture.testDataQuery();
-        while ( aricultureIterator.hasNext())
+        while ( aricultureIterator.hasNext() && dataIterator.hasNext())
         {
            assertThat(dataIterator.hasNext());
            Axiom output = aricultureIterator .next();

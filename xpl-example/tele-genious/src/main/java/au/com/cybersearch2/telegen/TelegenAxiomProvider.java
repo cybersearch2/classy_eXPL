@@ -34,25 +34,21 @@ public class TelegenAxiomProvider extends EntityAxiomProvider
     /**
      * TelegenAxiomProvider
      */
-    public TelegenAxiomProvider(
-		PersistenceWorker issueWorker, 
-		PersistenceWorker checkWorker)
+    public TelegenAxiomProvider(PersistenceWorker persistenceWorker)
     {
-        this(issueWorker, checkWorker, null);
+        this(persistenceWorker, null);
 
     }
 
     /**
      * TelegenAxiomProvider
      */
-    public TelegenAxiomProvider(
-		PersistenceWorker issueWorker, 
-		PersistenceWorker checkWorker,
-        PersistenceWork setUpTask)
+    public TelegenAxiomProvider(PersistenceWorker persistenceWorker,
+		PersistenceWork setUpTask)
     {
-        super("telegen", setUpTask);
-        addEntity(ISSUE, Issue.class, issueWorker);
-        addEntity(CHECK, Check.class, checkWorker);
+        super("telegen", persistenceWorker, setUpTask);
+        addEntity(ISSUE, Issue.class);
+        addEntity(CHECK, Check.class);
     }
 
 }

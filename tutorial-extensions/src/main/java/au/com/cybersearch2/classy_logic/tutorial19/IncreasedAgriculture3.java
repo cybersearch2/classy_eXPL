@@ -37,7 +37,6 @@ import au.com.cybersearch2.classy_logic.jpa.JpaSource;
 import au.com.cybersearch2.classy_logic.jpa.NameMap;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
-import au.com.cybersearch2.classy_logic.tutorial16.DaggerApplicationComponent;
 import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
 
 /**

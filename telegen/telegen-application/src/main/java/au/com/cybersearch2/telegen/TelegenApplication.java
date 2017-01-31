@@ -85,20 +85,14 @@ public class TelegenApplication extends Application
                     //startApplicationSetup(telegenComponent.persistenceContext());
                     // Get persistence context first time initializes databases
                     PersistenceContext persistenceContext = telegenComponent.persistenceContext();
-                    PersistenceWorker issueWorker = new PersistenceWorker(PU_NAME, persistenceContext){
+                    PersistenceWorker persistenceWorker = new PersistenceWorker(PU_NAME, persistenceContext){
 
                         @Override
                         public Executable doWork(PersistenceWork persistenceWork) {
                             return getExecutable(persistenceWork);
                         }};
-                    PersistenceWorker checkWorker = new PersistenceWorker(PU_NAME, persistenceContext){
-
-                        @Override
-                        public Executable doWork(PersistenceWork persistenceWork) {
-                            return getExecutable(persistenceWork);
-                        }};
-                    telegenComponent.providerManager()
-                    .putAxiomProvider(new TelegenAxiomProvider(issueWorker, checkWorker));
+                     telegenComponent.providerManager()
+                    .putAxiomProvider(new TelegenAxiomProvider(persistenceWorker));
 
                 }
                 catch (PersistenceException e)
