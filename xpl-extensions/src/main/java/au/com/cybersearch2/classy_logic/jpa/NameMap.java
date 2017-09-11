@@ -23,6 +23,7 @@ package au.com.cybersearch2.classy_logic.jpa;
 public class NameMap 
 {
 	protected String termName;
+	protected int position;
 	protected String fieldName;
 	
 	/**
@@ -67,5 +68,21 @@ public class NameMap
 	{
 		this.fieldName = fieldName;
 	}
+
+    /**
+     * @return the position
+     */
+    public int getPosition()
+    {
+        return position;
+    }
+
+    /**
+     * @param position the position to set
+     */
+    public void setPosition(int position)
+    {
+        this.position = position;
+    }
 
 }

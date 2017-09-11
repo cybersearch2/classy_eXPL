@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 import au.com.cybersearch2.classy_logic.QueryProgram;
 import au.com.cybersearch2.classy_logic.compile.ParserAssembler;
+import au.com.cybersearch2.classy_logic.compile.ParserContext;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
 import au.com.cybersearch2.classy_logic.parser.ParseException;
@@ -122,7 +123,8 @@ public class AgriDatabase implements PersistenceWork
 		queryParser.enable_tracing();
 		QueryProgram queryProgram = new QueryProgram();
 		queryProgram.setResourceBase(new File("src/main/resources"));
-		queryParser.input(queryProgram);
+		ParserContext context = new ParserContext(queryProgram);
+		queryParser.input(context);
         return queryProgram.getGlobalScope().getParserAssembler();
 	}
 

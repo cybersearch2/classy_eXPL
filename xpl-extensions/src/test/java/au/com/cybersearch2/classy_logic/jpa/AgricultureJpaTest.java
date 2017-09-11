@@ -33,11 +33,13 @@ import org.junit.Test;
 import au.com.cybersearch2.classy_logic.QueryProgram;
 import au.com.cybersearch2.classy_logic.TestModule;
 import au.com.cybersearch2.classy_logic.compile.ParserAssembler;
+import au.com.cybersearch2.classy_logic.compile.ParserContext;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
 import au.com.cybersearch2.classy_logic.parser.ParseException;
 import au.com.cybersearch2.classy_logic.parser.QueryParser;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classyjpa.EntityManagerLite;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
@@ -172,12 +174,15 @@ public class AgricultureJpaTest
         		new AgriPercentCollector(agriPersistenceService);
         List<NameMap> termNameList = new ArrayList<NameMap>();
         termNameList.add(new NameMap("country", "country"));
+        int index = 0;
         for (int year = 1962; year < 2011; ++year)
         {
-            String key = "Y" + year;
-            termNameList.add(new NameMap(key, key));
+            NameMap nameMap = new NameMap("y" + year, "Y" + year);
+            nameMap.setPosition(++index);
+            termNameList.add(nameMap);
         }
-        JpaSource jpaSource = new JpaSource(agriPercentCollector, "Data", termNameList); 
+        AxiomArchetype archetype = new AxiomArchetype(QualifiedName.parseGlobalName("Data"));
+        JpaSource jpaSource = new JpaSource(agriPercentCollector, archetype, termNameList); 
         Iterator<Axiom>  aricultureIterator = jpaSource.iterator();
         while ( aricultureIterator.hasNext())
         {
@@ -202,7 +207,8 @@ public class AgricultureJpaTest
         queryParser.enable_tracing();
         QueryProgram queryProgram = new QueryProgram();
         queryProgram.setResourceBase(new File("src/test/resources"));
-        queryParser.input(queryProgram);
+        ParserContext context = new ParserContext(queryProgram);
+        queryParser.input(context);
         return queryProgram.getGlobalScope().getParserAssembler();
     }
     

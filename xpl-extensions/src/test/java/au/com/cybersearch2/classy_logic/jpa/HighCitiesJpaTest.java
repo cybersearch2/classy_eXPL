@@ -27,7 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import au.com.cybersearch2.classy_logic.TestModule;
+import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classyjpa.EntityManagerLite;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
@@ -66,30 +68,30 @@ public class HighCitiesJpaTest
     
     static public final String[] CITY_AXIOMS =
 	{
-    	"city(id = 1, altitude = 1718, name = bilene)",
-    	"city(id = 2, altitude = 8000, name = addis ababa)",
-    	"city(id = 3, altitude = 5280, name = denver)",
-    	"city(id = 4, altitude = 6970, name = flagstaff)",
-    	"city(id = 5, altitude = 8, name = jacksonville)",
-    	"city(id = 6, altitude = 10200, name = leadville)",
-    	"city(id = 7, altitude = 1305, name = madrid)",
-    	"city(id = 8, altitude = 19, name = richmond)",
-    	"city(id = 9, altitude = 1909, name = spokane)",
-    	"city(id = 10, altitude = 1305, name = wichita)"
+    	"city(id=1, altitude=1718, name=bilene)",
+    	"city(id=2, altitude=8000, name=addis ababa)",
+    	"city(id=3, altitude=5280, name=denver)",
+    	"city(id=4, altitude=6970, name=flagstaff)",
+    	"city(id=5, altitude=8, name=jacksonville)",
+    	"city(id=6, altitude=10200, name=leadville)",
+    	"city(id=7, altitude=1305, name=madrid)",
+    	"city(id=8, altitude=19, name=richmond)",
+    	"city(id=9, altitude=1909, name=spokane)",
+    	"city(id=10, altitude=1305, name=wichita)"
    	};
 
     static public final String[] CITY_AXIOMS2 =
 	{
-		"city(Name = bilene, Altitude = 1718)",
-		"city(Name = addis ababa, Altitude = 8000)",
-		"city(Name = denver, Altitude = 5280)",
-		"city(Name = flagstaff, Altitude = 6970)",
-		"city(Name = jacksonville, Altitude = 8)",
-		"city(Name = leadville, Altitude = 10200)",
-		"city(Name = madrid, Altitude = 1305)",
-		"city(Name = richmond, Altitude = 19)",
-		"city(Name = spokane, Altitude = 1909)",
-		"city(Name = wichita, Altitude = 1305)"
+		"city(Name=bilene, Altitude=1718)",
+		"city(Name=addis ababa, Altitude=8000)",
+		"city(Name=denver, Altitude=5280)",
+		"city(Name=flagstaff, Altitude=6970)",
+		"city(Name=jacksonville, Altitude=8)",
+		"city(Name=leadville, Altitude=10200)",
+		"city(Name=madrid, Altitude=1305)",
+		"city(Name=richmond, Altitude=19)",
+		"city(Name=spokane, Altitude=1909)",
+		"city(Name=wichita, Altitude=1305)"
 	};
 
     private ApplicationComponent component;
@@ -144,7 +146,16 @@ public class HighCitiesJpaTest
         		new CityPersistenceService(component.persistenceContext(), this);
     	CityCollector cityCollector = new CityCollector(cityPersistenceService);
     	cityCollector.createSelectAllQuery("all_cities");
-    	JpaSource jpaSource = new JpaSource(cityCollector, "city");
+        List<NameMap> termNameList = new ArrayList<NameMap>();
+        termNameList.add(new NameMap("id", "id"));
+        NameMap altitudeMap = new NameMap("altitude", "altitude");
+        altitudeMap.setPosition(1);
+        termNameList.add(altitudeMap);
+        NameMap nameMap = new NameMap("name", "name");
+        nameMap.setPosition(2);
+        termNameList.add(nameMap);
+        AxiomArchetype archetype = new AxiomArchetype(QualifiedName.parseGlobalName("city"));
+        JpaSource jpaSource = new JpaSource(cityCollector, archetype, termNameList);
     	Iterator<Axiom> axiomIterator = jpaSource.iterator();
     	int next = 0;
     	while (axiomIterator.hasNext())
@@ -161,7 +172,11 @@ public class HighCitiesJpaTest
     	List<NameMap> termNameList = new ArrayList<NameMap>();
     	termNameList.add(new NameMap("Name", "name"));
     	termNameList.add(new NameMap("Altitude", "altitude"));
-    	JpaSource jpaSource = new JpaSource(cityCollector, "city", termNameList); 
+        AxiomArchetype archetype = new AxiomArchetype(QualifiedName.parseGlobalName("city"));
+        archetype.addTermName("Name");
+        archetype.addTermName("Altitude");
+        archetype.clearMutable();
+    	JpaSource jpaSource = new JpaSource(cityCollector, archetype, termNameList); 
     	Iterator<Axiom> axiomIterator = jpaSource.iterator();
     	int next = 0;
     	while (axiomIterator.hasNext())

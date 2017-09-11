@@ -16,13 +16,15 @@
 package au.com.cybersearch2.classy_logic.jpa;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
 import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
 import au.com.cybersearch2.classy_logic.interfaces.DataCollector;
+import au.com.cybersearch2.classy_logic.interfaces.Term;
+import au.com.cybersearch2.classy_logic.pattern.Archetype;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 
 /**
  * JpaSource
@@ -32,50 +34,74 @@ import au.com.cybersearch2.classy_logic.pattern.Axiom;
  */
 public class JpaSource implements AxiomSource
 {
-    public static final List<String> EMPTY_LIST;
     
 	/** Name to use when creating axioms. Defaults to data object simple class name. */
-	protected String axiomName;
+	protected AxiomArchetype archetype;
 	/** List of axiom term names. If not supplied, the term names come from data object field names */
 	protected List<NameMap> termNameList;
 	/** Executes JPA named queries to obtain data objects */
 	protected DataCollector dataCollector;
-    /** The term names */
-    protected List<String> axiomTermNameList;
-
-    static
-    {
-        EMPTY_LIST = Collections.emptyList();
-    }
-
-	/**
-	 * Constructs default JpaSource object.
-	 * @param dataCollector Executes JPA named queries to obtain data objects
-	 */
-	public JpaSource(DataCollector dataCollector, String axiomName) 
-	{
-		this(dataCollector, axiomName, null);
-	}
 
 	/**
 	 * Constructs JpaSource object which builds axioms according to given specifications
 	 * @param dataCollector Executes JPA named queries to obtain data objects
-	 * @param axiomName ame to use when creating axioms
-	 * @param termNameList List of axiom term names
+	 * @param archetype Axiom archetype
 	 */
-	public JpaSource(DataCollector dataCollector, String axiomName, List<NameMap> termNameList) 
+	public JpaSource(DataCollector dataCollector, AxiomArchetype archetype) 
 	{
 		this.dataCollector = dataCollector;
-		this.axiomName = axiomName;
-		this.termNameList = termNameList;
-		if ((termNameList != null) && !termNameList.isEmpty())
-		{
-		    List<String> axiomTermNameList = new ArrayList<String>();
-		    for (NameMap nameMap: termNameList)
-		        axiomTermNameList.add(nameMap.getTermName());
-		}
+		this.archetype = archetype;
+		termNameList = new ArrayList<NameMap>();
+        if (archetype.getTermCount() > 0)
+        {
+            for (int index = 0; index < archetype.getTermCount(); ++index)
+            {
+                String termName = archetype.getMetaData(index).getName();
+                NameMap nameMap = new NameMap(termName, termName);
+                nameMap.setPosition(index);
+                termNameList.add(nameMap);
+            }
+            lockArchetype();
+        }
     }
 
+    /**
+     * Constructs JpaSource object which builds axioms according to given specifications
+     * @param dataCollector Executes JPA named queries to obtain data objects
+     * @param archetype Axiom archetype
+     * @param termNameList List of axiom term names
+     */
+    public JpaSource(DataCollector dataCollector, AxiomArchetype archetype, List<NameMap> termNameList) 
+    {
+        this(dataCollector, archetype);
+        if ((termNameList != null) && !termNameList.isEmpty())
+        {
+            if (this.termNameList.isEmpty())
+                 this.termNameList = termNameList;
+            else
+            {
+                Iterator<NameMap> iterator = this.termNameList.iterator();
+                while (iterator.hasNext())
+                {
+                    NameMap nameMap = iterator.next();
+                    Iterator<NameMap> iterator2 = termNameList.iterator();
+                    while (iterator2.hasNext())
+                    {
+                        NameMap nameMap2 = iterator2.next();
+                        if (nameMap2.getTermName().equalsIgnoreCase(nameMap.getTermName()))
+                        {
+                            nameMap.setFieldName(nameMap2.getFieldName());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        int index = 0;
+        for (NameMap nameMap: termNameList)
+            nameMap.setPosition(index++);
+    }
+    
 	/**
 	 * Returns Axiom iterator
 	 * @see au.com.cybersearch2.classy_logic.interfaces.AxiomSource#iterator()
@@ -83,13 +109,21 @@ public class JpaSource implements AxiomSource
 	@Override
 	public Iterator<Axiom> iterator() 
 	{
-		return new JpaSourceIterator(dataCollector, axiomName, termNameList);
+		return new JpaSourceIterator(dataCollector, archetype, termNameList);
 	}
 
     @Override
-    public List<String> getAxiomTermNameList()
+    public Archetype<Axiom, Term> getArchetype()
     {
-        return axiomTermNameList == null ? EMPTY_LIST : axiomTermNameList;
+        return archetype;
+    }
+
+    /**
+     * Lock archetype - override if archetype needs modification before being locked
+     */
+    protected void lockArchetype()
+    {
+        archetype.clearMutable();
     }
 
 }

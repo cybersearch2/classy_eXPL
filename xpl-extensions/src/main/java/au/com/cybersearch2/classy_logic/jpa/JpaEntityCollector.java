@@ -59,6 +59,9 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
 
     /** Helper to perform persistence work */
     protected PersistenceWorker persistenceWorker;
+    /** Interface for JPA Support */
+    protected PersistenceAdmin persistenceAdmin;
+    /** The entity class */
     protected Class<E> entityClass;
 
     /**
@@ -71,6 +74,9 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
     {
         this.persistenceWorker = persistenceService;
         this.entityClass = entityClass;
+        PersistenceContext persistenceContext = persistenceWorker.getPersistenceContext();
+        String persistenceUnit = persistenceWorker.getPersistenceUnit();
+        persistenceAdmin = persistenceContext.getPersistenceAdmin(persistenceUnit);
     }
     
     /**
@@ -123,19 +129,20 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
         }
 	}
 
+	/**
+	 * Create select all query of specified name for theis collector's entity class
+	 * @param queryName Query name
+	 */
 	public void createSelectAllQuery(String queryName) 
 	{
 		namedJpaQuery = queryName;
-        PersistenceContext persistenceContext = persistenceWorker.getPersistenceContext();
-        String persistenceUnit = persistenceWorker.getPersistenceUnit();
-        PersistenceAdmin persistenceAdmin = persistenceContext.getPersistenceAdmin(persistenceUnit);
         QueryForAllGenerator allEntitiesQuery = 
                 new QueryForAllGenerator(persistenceAdmin);
         persistenceAdmin.addNamedQuery(entityClass, queryName, allEntitiesQuery);
 	}
 
 	/**
-	 * 
+	 * onPostExecute
 	 * @see au.com.cybersearch2.classyjpa.entity.PersistenceWork#onPostExecute(boolean)
 	 */
 	@Override
@@ -150,7 +157,7 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
 	}
 
 	/**
-	 * 
+	 * onRollback
 	 * @see au.com.cybersearch2.classyjpa.entity.PersistenceWork#onRollback(java.lang.Throwable)
 	 */
 	@Override
@@ -193,13 +200,6 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
 	}
 
 	/**
-	 * Override and set batchMode true if processBatch() to be called after persistence work performed
-	 */
-	protected void processBatch() 
-	{
-	}
-
-	/**
 	 * Returns limit set on number of results a query will produce
 	 * @return Limit number or 0 if no limit
 	 */
@@ -217,10 +217,11 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
 		this.maxResults = maxResults;
 	}
 
-	public PersistenceWorker getPersistenceService() 
-	{
-		return persistenceWorker;
-	}
+    /**
+     * Override and set batchMode true if processBatch() to be called after persistence work performed
+     */
+    protected void processBatch() 
+    {
+    }
 
-	
 }

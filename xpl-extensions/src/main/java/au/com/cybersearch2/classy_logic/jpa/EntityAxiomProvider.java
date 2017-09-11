@@ -15,16 +15,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
 package au.com.cybersearch2.classy_logic.jpa;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomListener;
-import au.com.cybersearch2.classy_logic.interfaces.AxiomProvider;
-import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
+import au.com.cybersearch2.classy_logic.interfaces.ResourceProvider;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
@@ -37,7 +36,7 @@ import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
  * @author Andrew Bowley
  * 23 May 2015
  */
-public class EntityAxiomProvider implements AxiomProvider
+public class EntityAxiomProvider implements ResourceProvider
 {
     /** Collection of Collectors which each fetch all rows in one database entity table */
     protected Map<String, JpaEntityCollector<?>> collectorMap;
@@ -128,22 +127,16 @@ public class EntityAxiomProvider implements AxiomProvider
             createDatabase();
     }
 
-    /**
-     * @see au.com.cybersearch2.classy_logic.interfaces.AxiomProvider#getAxiomSource(java.lang.String, java.util.List)
-     */
     @Override
-    public AxiomSource getAxiomSource(String axiomName,
-            List<String> axiomTermNameList) 
+    public Iterator<Axiom> iterator(AxiomArchetype archetype)
     {
         if ((setUpTask != null) && !databaseCreated)
             createDatabase();
         if (isEmpty())
-            throw new QueryExecutionException("No axiomSource available for \"" + axiomName + "\"");
-        List<NameMap> nameMapList = new ArrayList<NameMap>();
-        for (String termName: axiomTermNameList)
-            nameMapList.add(new NameMap(termName, termName));
-        JpaEntityCollector<?> jpaEntityCollector = collectorMap.get(axiomName);
-        return new JpaSource(jpaEntityCollector, axiomName, nameMapList);
+            throw new QueryExecutionException("No axiomSource available for \"" + archetype.getName() + "\"");
+        archetype.clearMutable();
+        JpaEntityCollector<?> jpaEntityCollector = collectorMap.get(archetype.getName());
+        return new JpaSource(jpaEntityCollector, archetype).iterator();
     }
 
     /**
@@ -196,5 +189,6 @@ public class EntityAxiomProvider implements AxiomProvider
             }
         }
     }
+
     
 }

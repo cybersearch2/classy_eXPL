@@ -22,15 +22,17 @@ import java.util.List;
 
 import com.googlecode.openbeans.PropertyDescriptor;
 
-import au.com.cybersearch2.classy_logic.expression.DelegateOperand;
 import au.com.cybersearch2.classy_logic.helper.Null;
 import au.com.cybersearch2.classy_logic.interfaces.DataCollector;
+import au.com.cybersearch2.classy_logic.operator.DelegateOperator;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classy_logic.terms.Parameter;
 import au.com.cybersearch2.classybean.BeanUtil;
 
 /**
  * JpaSourceIterator
+ * Implements Iterator interface to marshall axioms fetched by data collector 
  * @author Andrew Bowley
  * 13 Feb 2015
  */
@@ -38,12 +40,16 @@ public class JpaSourceIterator implements Iterator<Axiom>
 {
 	/** Name to use when creating axioms. Defaults to data object simple class name. */
 	protected String axiomName;
+	/** Axiom archetype */
+	protected AxiomArchetype archetype;
 	/** List of axiom term names. If not supplied, the term names come from data object field names */
 	protected List<NameMap> termNameList;
 	/** Executes JPA named queries to obtain data objects */
 	protected DataCollector dataCollector;
 	/** Data collection iterator */
 	protected Iterator<Object> entityIterator;
+    /** Flag set true if entity defines field names */
+    protected boolean isEntityNameMap;
 
 	/**
 	 * Constructs JpaSourceIterator object which builds axioms according to given specifications
@@ -51,33 +57,35 @@ public class JpaSourceIterator implements Iterator<Axiom>
 	 * @param axiomName ame to use when creating axioms
 	 * @param termNameList List of axiom term names
 	 */
-	public JpaSourceIterator(DataCollector dataCollector, String axiomName, List<NameMap> termNameList) 
+	public JpaSourceIterator(DataCollector dataCollector, AxiomArchetype archetype, List<NameMap> termNameList)
 	{
 		this.dataCollector = dataCollector;
-		this.axiomName = axiomName;
+		this.archetype = archetype;
 		this.termNameList = termNameList;
+        isEntityNameMap = archetype.getTermCount() == 0;
+
     }
 
     /**
-     * 
+     * hasNext
      * @see java.util.Iterator#hasNext()
      */
 	@Override
 	public boolean hasNext() 
-	{
+	{   // Ensure entity iterator is ready to navigate database table
 		if ((entityIterator== null) || (!entityIterator.hasNext() && dataCollector.isMoreExpected()))
 			entityIterator = dataCollector.getData().iterator();
 		return entityIterator.hasNext();
 	}
 
 	/**
-	 * 
+	 * next
 	 * @see java.util.Iterator#next()
 	 */
 	@Override
 	public Axiom next() 
 	{   // Don't assume hasNext() has been called prior
-		if ((entityIterator== null) && ! hasNext())
+		if ((entityIterator== null) && !hasNext())
 			return null;
 		// next() starts here
 		Object entity = entityIterator.next();
@@ -95,61 +103,74 @@ public class JpaSourceIterator implements Iterator<Axiom>
 	 */
 	protected Axiom getAxiomFromEntity(Object entity)
 	{
-		// Create new axiom
-		Axiom axiom = new Axiom(axiomName);
 		// Use Bean utilities to access entity object fields
 		PropertyDescriptor[] descriptors = BeanUtil.getBeanInfo(entity).getPropertyDescriptors();
-		// Special case for identity column, assuming name is "id" by convention
-		Parameter id = null;
-		ArrayList<Parameter> paramList = new ArrayList<Parameter>(descriptors.length);
-		for (PropertyDescriptor descriptor: descriptors)
-		{
-			String termName = null;
-			int termIndex = 0;
-            String key = descriptor.getName();
-            Object value = null;
-			if ((termNameList != null) && !termNameList.isEmpty())
-			{
-				for (NameMap nameMap: termNameList)
-				{
-					if (nameMap.getFieldName().equalsIgnoreCase(key))
-					{
-						termName = nameMap.getTermName();
-			            value = invoke(entity, descriptor); 
-			            assignItem(paramList, termIndex, new Parameter(termName, value == null ? new Null() : value));
-						break;
-					}
-					++termIndex;
-				}
-			}
-			else 
-			{
-                value = invoke(entity, descriptor); 
-			    if ((value != null) && DelegateOperand.isDelegateClass(value.getClass()))
-			    {
-                    // By default, all fields of expression-capable type are added as terms to the axiom
-    				if ("id".equals(key))
-    					id = new Parameter(key, value);
-    				else 
-    					paramList.add(new Parameter(key, value));
-			    }
-			}
-		}
-		if (id != null)
-			axiom.addTerm(id);
-		int index = 0;
+        ArrayList<Parameter> paramList = new ArrayList<Parameter>(descriptors.length);
+		if (isEntityNameMap)
+		    createNameMap(entity, descriptors, paramList);
+		else
+    		for (PropertyDescriptor descriptor: descriptors)
+    		{
+    			String termName = null;
+                String key = descriptor.getName();
+                Object value = null;
+    			for (NameMap nameMap: termNameList)
+    			{
+    				if (nameMap.getFieldName().equalsIgnoreCase(key))
+    				{
+    					termName = nameMap.getTermName();
+    		            value = invoke(entity, descriptor); 
+    		            assignItem(paramList, nameMap.getPosition(), new Parameter(termName, value == null ? new Null() : value));
+    					break;
+    				}
+    			}
+    		}
+        Axiom axiom = new Axiom(archetype);
 		for (Parameter param: paramList)
-		{   // When axiom specifications are provided, some param values may end up null
-			if (param != null)
-				axiom.addTerm(param);
-			else
-				axiom.addTerm(new Parameter(termNameList.get(index).getTermName(), new Null()));
-			++index;
-		}
+			axiom.addTerm(param);
+        if (isEntityNameMap)
+        {
+            isEntityNameMap = false;
+            archetype.clearMutable();
+        }
 		return axiom;
 	}
 
-	/**
+	private void createNameMap(Object entity, PropertyDescriptor[] descriptors, ArrayList<Parameter> paramList)
+    {
+        List<NameMap> newTermNameList = new ArrayList<NameMap>();
+        for (PropertyDescriptor descriptor: descriptors)
+        {
+            String termName = null;
+            String key = descriptor.getName();
+            Object value = invoke(entity, descriptor);
+            if ((value == null) || !DelegateOperator.isDelegateClass(value.getClass()))
+                continue;
+            termName = key;
+            Iterator<NameMap> iterator = termNameList.iterator();
+            int position = -1;
+            while (iterator.hasNext())
+            {
+                NameMap nameMap = iterator.next();
+                if (nameMap.getFieldName().equalsIgnoreCase(key))
+                {
+                    termName = nameMap.getTermName();
+                    position = nameMap.getPosition();
+                    break;
+                }
+            }
+            if (position == -1)
+                continue;
+            Parameter param = new Parameter(termName, value == null ? new Null() : value);
+            assignItem(paramList, position, param);
+            NameMap nameMap = new NameMap(termName, key);
+            nameMap.setPosition(position);
+            newTermNameList.add(nameMap);
+        }
+        termNameList = newTermNameList;
+    }
+
+    /**
 	 * Not implemented
 	 * @see java.util.Iterator#remove()
 	 */

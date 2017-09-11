@@ -16,18 +16,18 @@
 package au.com.cybersearch2.classy_logic.parser;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import au.com.cybersearch2.classy_logic.ProviderManager;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomListener;
-import au.com.cybersearch2.classy_logic.interfaces.AxiomProvider;
-import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
+import au.com.cybersearch2.classy_logic.interfaces.ResourceProvider;
 import au.com.cybersearch2.classy_logic.jpa.City;
 import au.com.cybersearch2.classy_logic.jpa.CityCollector;
 import au.com.cybersearch2.classy_logic.jpa.JpaSource;
-import au.com.cybersearch2.classy_logic.jpa.NameMap;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
 import au.com.cybersearch2.classyjpa.EntityManagerLite;
@@ -39,7 +39,7 @@ import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
  * @author Andrew Bowley
  * 11 Feb 2015
  */
-public class TestAxiomProvider extends ProviderManager implements AxiomProvider 
+public class TestAxiomProvider extends ProviderManager implements ResourceProvider 
 {
 	private PersistenceWorker persistenceWorker;
 
@@ -75,7 +75,14 @@ public class TestAxiomProvider extends ProviderManager implements AxiomProvider
 		}
 	}
 
-	@Override
+    @Override
+    public Iterator<Axiom> iterator(AxiomArchetype archetype)
+    {
+        CityCollector cityCollector = new CityCollector(persistenceWorker);
+        cityCollector.createSelectAllQuery("all_cities");
+        return new JpaSource(cityCollector, archetype).iterator();
+    }
+/*    
 	public AxiomSource getAxiomSource(String axiomName,
 			List<String> axiomTermNameList) 
 	{
@@ -91,7 +98,7 @@ public class TestAxiomProvider extends ProviderManager implements AxiomProvider
 		}
 		return axiomSource;
 	}
-
+*/
 	@Override
 	public boolean isEmpty() 
 	{
@@ -111,7 +118,7 @@ public class TestAxiomProvider extends ProviderManager implements AxiomProvider
 	}
 	
 	@Override
-	public AxiomProvider getAxiomProvider(QualifiedName name)
+	public ResourceProvider getResourceProvider(QualifiedName name)
 	{
 		return this;
 	}
@@ -152,6 +159,7 @@ public class TestAxiomProvider extends ProviderManager implements AxiomProvider
     public void close()
     {
     }
+
 
 
 }

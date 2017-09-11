@@ -1,0 +1,65 @@
+Albania 986
+Algeria 25722
+American Samoa 10
+Argentina 133181
+Belize 321
+Benin 10991
+Bhutan 1378
+Bolivia 15050
+Brazil 252891
+Burkina Faso 23692
+Cambodia 11496
+Cape Verde 209
+Comoros 269
+Cote d'Ivoire 15026
+Djibouti 4013
+Dominica 60
+Ecuador 5947
+Egypt 11316
+El Salvador 1390
+Fiji 230
+Gambia 384
+Ghana 31439
+Guatemala 1110
+Guinea-Bissau 2482
+Haiti 2436
+Indonesia 96371
+Isle of Man 39
+Korea, Dem. Rep. 3905
+Laos 7104
+Lebanon 857
+Lesotho 340
+Madagascar 45965
+Malawi 17677
+Malaysia 8997
+Mali 91153
+Mayotte 19
+Mozambique 16946
+Myanmar 21177
+Nicaragua 12489
+Niger 123785
+Nigeria 26512
+Oman 7582
+Panama 1319
+Paraguay 38681
+Peru 25061
+Philippines 8550
+Rwanda 1548
+Sao Tome and Principe 139
+Saudi Arabia 551395
+Senegal 6924
+Sierra Leone 5911
+South Africa 29380
+Sri Lanka 2827
+Sudan 146339
+Syria 4314
+Tanzania 16104
+Timor-Leste 700
+Togo 2504
+Tunisia 11779
+Uganda 25386
+United Arab Emirates 3302
+Vanuatu 380
+Vietnam 41381
+Zambia 25212
+Zimbabwe 34777

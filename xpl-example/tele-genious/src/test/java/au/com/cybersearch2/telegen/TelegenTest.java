@@ -29,6 +29,7 @@ import org.junit.Test;
 import au.com.cybersearch2.classy_logic.ProviderManager;
 import au.com.cybersearch2.classy_logic.QueryParams;
 import au.com.cybersearch2.classy_logic.QueryProgram;
+import au.com.cybersearch2.classy_logic.compile.ParserContext;
 import au.com.cybersearch2.classy_logic.interfaces.SolutionHandler;
 import au.com.cybersearch2.classy_logic.parser.ParseException;
 import au.com.cybersearch2.classy_logic.parser.QueryParser;
@@ -98,8 +99,8 @@ public class TelegenTest
     
  */
     static public final String TELEGEN_XPL =
-        "axiom issue() : \"telegen\";\n" +
-        "axiom check() : \"telegen\";\n" +
+        "resource issue axiom() = \"telegen\";\n" +
+        "resource check axiom() = \"telegen\";\n" +
         "axiom issue_param(issue_name): parameter;\n" +
         "axiom check_param(check_name): parameter;\n" +
         "template issue (name, observation);\n" +
@@ -112,7 +113,7 @@ public class TelegenTest
         "    {\"Set top box\",      \"Programme\"}\n" +
         "    {true,                 \"Support\"};\n" +
         "choice next_check\n"  +
-        "    (  check_name,           next_check) \n" +
+        "    (  check_name,           check) \n" +
         "    {\"Power cord\",       \"Wall outlet\"}\n" +
         "    {\"Wall outlet\",      \"Remote\"}\n" +
         "    {\"Remote\",           \"Support\"}\n" +
@@ -151,7 +152,7 @@ public class TelegenTest
 			public Executable doWork(PersistenceWork persistenceWork) {
 				return getExecutable(persistenceWork);
 			}};
-       providerManager.putAxiomProvider(new TelegenAxiomProvider(persistenceWorker));
+       providerManager.putResourceProvider(new TelegenResourceProvider(persistenceWorker));
     }
     
     @Test
@@ -206,7 +207,7 @@ public class TelegenTest
             @Override
             public boolean onSolution(Solution solution)
             {
-                Axiom issue = solution.getAxiom(TelegenAxiomProvider.ISSUE);
+                Axiom issue = solution.getAxiom(TelegenResourceProvider.ISSUE);
                 String[] issueItem = TestIssues.ISSUE_DATA[index++];
                 assertThat(issue.getTermByName("name").getValue().toString()).isEqualTo(issueItem[0]);
                 assertThat(issue.getTermByName("observation").getValue().toString()).isEqualTo(issueItem[1]);
@@ -218,7 +219,7 @@ public class TelegenTest
             @Override
             public boolean onSolution(Solution solution)
             {
-                Axiom check = solution.getAxiom(TelegenAxiomProvider.CHECK);
+                Axiom check = solution.getAxiom(TelegenResourceProvider.CHECK);
                 String[] checkItem = TestChecks.CHECK_DATA[index++];
                 assertThat(check.getTermByName("name").getValue().toString()).isEqualTo(checkItem[0]);
                 assertThat(check.getTermByName("instruction").getValue().toString()).isEqualTo(checkItem[1]);
@@ -298,7 +299,7 @@ public class TelegenTest
         queryParams.setSolutionHandler(new SolutionHandler(){
             @Override
             public boolean onSolution(Solution solution) {
-                assertThat(solution.getString("next_check", "next_check")).isEqualTo(nextcheck);
+                assertThat(solution.getString("next_check", "check")).isEqualTo(nextcheck);
                 return true;
             }});
         queryProgram.executeQuery(queryParams);
@@ -310,7 +311,8 @@ public class TelegenTest
         QueryParser queryParser = new QueryParser(stream);
         QueryProgram queryProgram = new QueryProgram(providerManager);
         queryProgram.setResourceBase(new File("src/main/resources"));
-        queryParser.input(queryProgram);
+        ParserContext context = new ParserContext(queryProgram);
+        queryParser.input(context);
         return queryProgram;
     }
     

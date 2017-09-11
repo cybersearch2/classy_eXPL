@@ -30,9 +30,10 @@ import au.com.cybersearch2.classy_logic.QueryParams;
 import au.com.cybersearch2.classy_logic.QueryProgram;
 import au.com.cybersearch2.classy_logic.TestModule;
 import au.com.cybersearch2.classy_logic.compile.ParserAssembler;
+import au.com.cybersearch2.classy_logic.compile.ParserContext;
 import au.com.cybersearch2.classy_logic.pattern.KeyName;
 import au.com.cybersearch2.classy_logic.pattern.Template;
-import au.com.cybersearch2.classy_logic.query.QueryExecuter;
+import au.com.cybersearch2.classy_logic.query.LogicQueryExecuter;
 import au.com.cybersearch2.classy_logic.query.QuerySpec;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
@@ -67,8 +68,7 @@ public class QueryParserTest
     /** PersistenceUnitAdmin Unit name to look up configuration details in persistence.xml */
     static public final String PU_NAME = "cities";
 	static final String HIGH_CITIES_JPA_XPL =
-	        "resource \"cities\";\n" +
-			"axiom city (name, altitude): \"cities\";\n" +
+	        "resource city axiom  (name, altitude) = \"cities\";\n" +
 			"template high_city(string name, altitude ? altitude > 5000);\n"
 			;
 
@@ -92,35 +92,36 @@ public class QueryParserTest
 		InputStream stream = new ByteArrayInputStream(HIGH_CITIES_JPA_XPL.getBytes());
 		QueryParser queryParser = new QueryParser(stream);
 		QueryProgram queryProgram = new QueryProgram(providerManager);
-		queryParser.input(queryProgram);
+        ParserContext context = new ParserContext(queryProgram);
+        queryParser.input(context);
 	    ParserAssembler parserAssembler = queryProgram.getGlobalScope().getParserAssembler();
-	    Template highCities = parserAssembler.getTemplate("high_city");
+	    Template highCities = parserAssembler.getTemplateAssembler().getTemplate("high_city");
 	    highCities.setKey("city");
-        QuerySpec querySpec = new QuerySpec("TEST");
+        QuerySpec querySpec = new QuerySpec("TEST", true);
 		KeyName keyName = new KeyName("city", "high_city");
 		querySpec.addKeyName(keyName);
 		QueryParams queryParams = new QueryParams(queryProgram.getGlobalScope(), querySpec);
 		queryParams.initialize();
-	    QueryExecuter highCitiesQuery = new QueryExecuter(queryParams);
+	    LogicQueryExecuter highCitiesQuery = new LogicQueryExecuter(queryParams);
 	    int count = 0;
  	    if (highCitiesQuery.execute())
  	    {
-  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name = addis ababa, altitude = 8000)");
+  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name=addis ababa, altitude=8000)");
   	    	++count;
  	    }
  	    if (highCitiesQuery.execute())
  	    {
-  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name = denver, altitude = 5280)");
+  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name=denver, altitude=5280)");
   	    	++count;
  	    }
  	    if (highCitiesQuery.execute())
  	    {
-  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name = flagstaff, altitude = 6970)");
+  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name=flagstaff, altitude=6970)");
   	    	++count;
  	    }
  	    if (highCitiesQuery.execute())
  	    {
-  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name = leadville, altitude = 10200)");
+  	    	assertThat(highCitiesQuery.toString()).isEqualTo("high_city(name=leadville, altitude=10200)");
   	    	++count;
  	    }
  	    assertThat(count).isEqualTo(4);

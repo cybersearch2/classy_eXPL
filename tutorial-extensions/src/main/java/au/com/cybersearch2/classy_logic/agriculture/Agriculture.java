@@ -23,10 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import au.com.cybersearch2.classy_logic.expression.ExpressionException;
+import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.jpa.JpaEntityCollector;
 import au.com.cybersearch2.classy_logic.jpa.JpaSource;
 import au.com.cybersearch2.classy_logic.jpa.NameMap;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
+import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWorkModule;
@@ -73,9 +75,15 @@ public class Agriculture
         JpaEntityCollector<AgriAreaPercent> yearPercentCollector = new AgriPercentCollector(persistenceWorker);
     	List<NameMap> termNameList = new ArrayList<NameMap>();
     	termNameList.add(new NameMap("country", "country"));
+    	int index = 0;
         for (int year = 1962; year < 2011; ++year)
-            termNameList.add(new NameMap("y" + year, "Y" + year));
-    	JpaSource jpaSource = new JpaSource(yearPercentCollector, "agri_area_percent", termNameList); 
+        {
+            NameMap nameMap = new NameMap("y" + year, "Y" + year);
+            nameMap.setPosition(++index);
+            termNameList.add(nameMap);
+        }
+        AxiomArchetype archetype = new AxiomArchetype(QualifiedName.parseGlobalName("agri_area_percent"));
+    	JpaSource jpaSource = new JpaSource(yearPercentCollector, archetype, termNameList); 
     	return jpaSource.iterator();
     }
 
