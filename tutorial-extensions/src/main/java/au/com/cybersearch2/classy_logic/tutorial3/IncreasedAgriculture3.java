@@ -31,7 +31,7 @@ import au.com.cybersearch2.classy_logic.agriculture.DaggerAgricultureComponent;
 import au.com.cybersearch2.classy_logic.expression.ExpressionException;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.SolutionHandler;
-import au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider;
+import au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider;
 import au.com.cybersearch2.classy_logic.jpa.JpaEntityCollector;
 import au.com.cybersearch2.classy_logic.jpa.JpaSource;
 import au.com.cybersearch2.classy_logic.jpa.NameMap;
@@ -110,7 +110,7 @@ query<axiom> increased_query(surface_area_increase : increased);
             nameMap.setPosition(++index);
             termNameList.add(nameMap);
         }
-        EntityAxiomProvider entityAxiomProvider = new EntityAxiomProvider("agriculture", yearPercentWorker)
+        EntityResourceProvider entityResourceProvider = new EntityResourceProvider("agriculture", yearPercentWorker)
         {
             @Override
             public Iterator<Axiom> iterator(AxiomArchetype archetype) 
@@ -122,9 +122,9 @@ query<axiom> increased_query(surface_area_increase : increased);
         // Case-insensitive match required for matching terms in database entities to axiom terms
         Archetype.CASE_INSENSITIVE_NAME_MATCH = true;
         File resourcePath = new File("src/main/resources");
-        // Use an external axiom source which is bound in AgriAxiomProvider dependency class
+        // Use an external axiom source which is bound in AgriResourceProvider dependency class
         // to AxiomSource class LexiconSource
-        queryProgramParser = new QueryProgramParser(resourcePath, entityAxiomProvider, new AgriAxiomProvider(agri20YearService));
+        queryProgramParser = new QueryProgramParser(resourcePath, entityResourceProvider, new AgriAxiomProvider(agri20YearService));
 	}
 	
 	/**

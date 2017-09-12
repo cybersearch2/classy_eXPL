@@ -21,7 +21,7 @@ import java.util.List;
 
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomListener;
-import au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider;
+import au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider;
 import au.com.cybersearch2.classy_logic.jpa.JpaEntityCollector;
 import au.com.cybersearch2.classy_logic.jpa.JpaSource;
 import au.com.cybersearch2.classy_logic.jpa.NameMap;
@@ -29,7 +29,7 @@ import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 
 /**
- * AgriAxiomProvider
+ * AgriResourceProvider
  * An example of an Axiom Provider for more than one Axiom source.
  * The "surface_area_increase" Axiom source has a simple entity collector,
  * but the "Data" axiom source has a custom collector which fetches data in batch mode
@@ -38,7 +38,7 @@ import au.com.cybersearch2.classy_logic.pattern.Axiom;
  * @author Andrew Bowley
  * 18 Mar 2015
  */
-public class AgriAxiomProvider extends EntityAxiomProvider 
+public class AgriAxiomProvider extends EntityResourceProvider 
 {
     /** Axiom source name for countries which increased agricultural surface area over 10 year interval */
     static public final String TWENTY_YEAR_AXIOM = "surface_area_increase";
@@ -47,7 +47,7 @@ public class AgriAxiomProvider extends EntityAxiomProvider
     protected Agri20YearPersistenceService agri20YearService;
     
 	/**
-	 * Construct AgriAxiomProvider object
+	 * Construct AgriResourceProvider object
 	 */
 	public AgriAxiomProvider(
 	        Agri20YearPersistenceService agri20YearService) 
@@ -61,7 +61,7 @@ public class AgriAxiomProvider extends EntityAxiomProvider
 
 	/**
 	 * Returns Axiom Provider identity
-	 * @see au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider#getName()
+	 * @see au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider#getName()
 	 */
 	@Override
 	public String getName() 
@@ -71,7 +71,7 @@ public class AgriAxiomProvider extends EntityAxiomProvider
 
 	/**
 	 * 
-	 * @see au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider#getAxiomSource(java.lang.String, java.util.List)
+	 * @see au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider#getAxiomSource(java.lang.String, java.util.List)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -90,7 +90,7 @@ public class AgriAxiomProvider extends EntityAxiomProvider
 	}
 
 	/**
-	 * @see au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider#getAxiomListener()
+	 * @see au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider#getAxiomListener()
 	 */
 	@Override
 	public AxiomListener getAxiomListener(String name) 

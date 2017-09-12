@@ -24,7 +24,6 @@ import au.com.cybersearch2.classy_logic.QueryProgram;
 import au.com.cybersearch2.classy_logic.QueryProgramParser;
 import au.com.cybersearch2.classy_logic.expression.ExpressionException;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
-import au.com.cybersearch2.classy_logic.interfaces.SolutionHandler;
 import au.com.cybersearch2.classy_logic.jpa.JpaEntityCollector;
 import au.com.cybersearch2.classy_logic.jpa.JpaSource;
 import au.com.cybersearch2.classy_logic.jpa.NameMap;
@@ -32,7 +31,6 @@ import au.com.cybersearch2.classy_logic.pattern.Archetype;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classy_logic.pattern.AxiomArchetype;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
-import au.com.cybersearch2.classy_logic.query.Solution;
 
 /**
  * IncreasedAgriculture2 demonstrates Axiom Provider writing query results to a database.
@@ -81,9 +79,7 @@ query<axiom> more_agriculture(agri_area_percent : agri_20y, surface_area : surfa
 		// Case-insensitive match required for matching terms in database entities to axiom terms
         Archetype.CASE_INSENSITIVE_NAME_MATCH = true;
         File resourcePath = new File("src/main/resources");
-        // Use an external axiom source which is bound in AgriAxiomProvider dependency class
-        // to AxiomSource class LexiconSource
-        queryProgramParser = new QueryProgramParser(resourcePath, new AgriAxiomProvider(agri20YearService));
+        queryProgramParser = new QueryProgramParser(resourcePath, new AgriResourceProvider(agri20YearService));
 	}
 	
 	/**

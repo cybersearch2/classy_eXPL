@@ -130,7 +130,7 @@ public class JpaEntityCollector<E> implements DataCollector, PersistenceWork
 	}
 
 	/**
-	 * Create select all query of specified name for theis collector's entity class
+	 * Create select all query of specified name for this collector's entity class
 	 * @param queryName Query name
 	 */
 	public void createSelectAllQuery(String queryName) 

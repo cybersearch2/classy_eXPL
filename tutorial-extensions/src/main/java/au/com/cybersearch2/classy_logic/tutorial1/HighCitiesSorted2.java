@@ -24,7 +24,7 @@ import au.com.cybersearch2.classy_logic.QueryProgramParser;
 import au.com.cybersearch2.classy_logic.Result;
 import au.com.cybersearch2.classy_logic.expression.ExpressionException;
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
-import au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider;
+import au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classy_logic.query.QueryExecutionException;
 
@@ -85,12 +85,10 @@ query cities_query (city : high_city) -> (insert_sort);
                 DaggerApplicationComponent.builder()
                 .citiesModule(new CitiesModule())
                 .build();
-		EntityAxiomProvider entityAxiomProvider = new EntityAxiomProvider("cities", new CityPersistenceWorker(component), new CitiesDatabase());
-		entityAxiomProvider.addEntity("city", City.class); 
+		EntityResourceProvider entityResourceProvider = new EntityResourceProvider("cities", new CityPersistenceWorker(component), new CitiesDatabase());
+		entityResourceProvider.addEntity("city", City.class); 
         File resourcePath = new File("src/main/resources/tutorial1");
-        // Use an external axiom source which is bound in AgriAxiomProvider dependency class
-        // to AxiomSource class LexiconSource
-        queryProgramParser = new QueryProgramParser(resourcePath, entityAxiomProvider);
+        queryProgramParser = new QueryProgramParser(resourcePath, entityResourceProvider);
 	}
 	
 	/**

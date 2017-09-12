@@ -15,49 +15,46 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
 package au.com.cybersearch2.classy_logic.tutorial2;
 
-import java.util.List;
-
 import au.com.cybersearch2.classy_logic.helper.QualifiedName;
 import au.com.cybersearch2.classy_logic.interfaces.AxiomListener;
-import au.com.cybersearch2.classy_logic.interfaces.AxiomSource;
-import au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider;
+import au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider;
 import au.com.cybersearch2.classy_logic.pattern.Axiom;
 import au.com.cybersearch2.classyjpa.persist.PersistenceService;
 
 /**
- * AgriAxiomProvider
+ * AgriResourceProvider
  * @author Andrew Bowley
  * 18 Mar 2015
  */
-public class AgriAxiomProvider extends EntityAxiomProvider 
+public class AgriResourceProvider extends EntityResourceProvider 
 {
     /** PersistenceUnitAdmin Unit name to look up configuration details in persistence.xml */
     static public final String PU_NAME = "agriculture";
-    /** Axiom source name for countries which increased agricultural surface area over 10 year interval */
+    /** Axiom source name for countries which increased agricultural surface area over 20 year interval */
     static public final String TEN_YEAR_AXIOM = "surface_area_increase";
     
     
-    protected Agri20YearPersistenceService agri10YearService;
+    protected Agri20YearPersistenceService agri20YearService;
     
 	/**
-	 * Construct AgriAxiomProvider object
+	 * Construct AgriResourceProvider object
 	 */
-	public AgriAxiomProvider(
-	        Agri20YearPersistenceService agri10YearService) 
+	public AgriResourceProvider(
+	        Agri20YearPersistenceService agri20YearService) 
 	{
 	    // Super class will construct TWENTY_YEAR_AXIOM collector
-		super(PU_NAME, agri10YearService);
-		this.agri10YearService = agri10YearService;
+		super(PU_NAME, agri20YearService);
+		this.agri20YearService = agri20YearService;
 	}
 
 	public PersistenceService<Agri20Year> getPersistenceService()
 	{
-	    return agri10YearService;
+	    return agri20YearService;
 	}
 	
 	/**
 	 * Returns Axiom Provider identity
-	 * @see au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider#getName()
+	 * @see au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider#getName()
 	 */
 	@Override
 	public String getName() 
@@ -66,7 +63,7 @@ public class AgriAxiomProvider extends EntityAxiomProvider
 	}
 
 	/**
-	 * @see au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider#getAxiomListener()
+	 * @see au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider#getAxiomListener()
 	 */
 	@Override
 	public AxiomListener getAxiomListener(String name) 
@@ -82,15 +79,15 @@ public class AgriAxiomProvider extends EntityAxiomProvider
 		    	// Do task of persisting Agri20Year asychronously. (Subject to using multi-connection ConnectionSource).
 		    	try 
 		    	{
-		    	    agri10YearService.incrementCount();
-		    		agri10YearService.put(agri20Year);
+		    	    agri20YearService.incrementCount();
+		    		agri20YearService.put(agri20Year);
 				} 
 		    	catch (InterruptedException e) 
 		    	{
 
 				}
 		    	// Change above line for next two to do task synchronously
-				//if (providerManager.doWork(PU_NAME, new PersistAgri10Year(agri20Year)) != WorkStatus.FINISHED)
+				//if (providerManager.doWork(PU_NAME, new PersistAgri20Year(agri20Year)) != WorkStatus.FINISHED)
 			    //	throw new QueryExecutionException("Error persisting resource " + getName() + " axiom: " + axiom.toString());
 			}
 		};

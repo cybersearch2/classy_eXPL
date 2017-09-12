@@ -15,7 +15,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/> */
 package au.com.cybersearch2.telegen;
 
-import au.com.cybersearch2.classy_logic.jpa.EntityAxiomProvider;
+import au.com.cybersearch2.classy_logic.jpa.EntityResourceProvider;
 import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
 import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
 import au.com.cybersearch2.entity.Check;
@@ -26,7 +26,7 @@ import au.com.cybersearch2.entity.Issue;
  * @author Andrew Bowley
  * 24 May 2015
  */
-public class TelegenResourceProvider extends EntityAxiomProvider
+public class TelegenResourceProvider extends EntityResourceProvider
 {
     static public final String ISSUE = "issue";
     static public final String CHECK = "check";

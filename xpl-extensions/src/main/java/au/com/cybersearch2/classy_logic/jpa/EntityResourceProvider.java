@@ -30,13 +30,13 @@ import au.com.cybersearch2.classyjpa.entity.PersistenceWork;
 import au.com.cybersearch2.classyjpa.persist.PersistenceWorker;
 
 /**
- * EntityAxiomProvider
+ * EntityResourceProvider
 *  An eXPL resource object which receives and transmits axioms on a connection to a relational database
 *  using Classy Tools JPA.
  * @author Andrew Bowley
  * 23 May 2015
  */
-public class EntityAxiomProvider implements ResourceProvider
+public class EntityResourceProvider implements ResourceProvider
 {
     /** Collection of Collectors which each fetch all rows in one database entity table */
     protected Map<String, JpaEntityCollector<?>> collectorMap;
@@ -50,22 +50,22 @@ public class EntityAxiomProvider implements ResourceProvider
     protected boolean databaseCreated;
 
     /**
-     * EntityAxiomProvider
+     * EntityResourceProvider
      * @param name Name of provider
      * @param persistenceWorker Executes tasks
      */
-    public EntityAxiomProvider(String name, PersistenceWorker persistenceWorker)
+    public EntityResourceProvider(String name, PersistenceWorker persistenceWorker)
     {
         this(name, persistenceWorker, null);
     }
 
     /**
-     * EntityAxiomProvider
+     * EntityResourceProvider
      * @param persistenceUnit Name of persistence unit defined in persistence.xml configuration file
      * @param persistenceWorker Executes tasks
      * @param setUpTask PersistenceWork object to perform one-time initialization
      */
-    public EntityAxiomProvider(String name, PersistenceWorker persistenceWorker, PersistenceWork setUpTask)
+    public EntityResourceProvider(String name, PersistenceWorker persistenceWorker, PersistenceWork setUpTask)
     {
         this.name = name;
         // TODO - validate parameters
