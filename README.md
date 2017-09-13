@@ -3,7 +3,7 @@
 Extends Expression Pattern Language (eXPL) for lightweight JPA with Classy Tools
 See below for information on eXPL.
 
-Depends on Classy Tools at https://github.com/andrew-bowley/classy_tools.git.
+Depends on [Classy Tools] (https://github.com/andrew-bowley/classy_tools.git).
 Classy Tools as a foundation library, so shares with it the use of Dagger Dependency, 
 Bean utilities and most importantly, a Java Persistence API implementation.
 
@@ -12,7 +12,7 @@ Bean utilities and most importantly, a Java Persistence API implementation.
 The instructions for getting started can be found at [eXPL Extensions Home Page](http://cybersearch2.com.au/logic/start_extensions.html).
 You will need to clone this project from the [Github site](https://github.com/cybersearch2/classy_eXPL.git) and then use
 Maven to install it. Both Java SE version 7 and above and Maven need to be installed in order to proceed. Once
-the project is installed you can progress through the [Persistence tutorial examples](<http://cybersearch2.com.au/logic/persistence-examples.html#col2).
+the project is installed you can progress through the [Persistence tutorial examples](http://cybersearch2.com.au/logic/persistence-examples.html#col2).
 
 
 # eXPL
