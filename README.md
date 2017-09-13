@@ -3,8 +3,7 @@
 Extends Expression Pattern Language (eXPL) for lightweight JPA with Classy Tools
 See below for information on eXPL.
 
-Depends on [Classy Tools](https://github.com/andrew-bowley/classy_tools.git).
-Classy Tools as a foundation library, so shares with it the use of Dagger Dependency, 
+Depends on [Classy Tools](https://github.com/andrew-bowley/classy_tools.git) as a foundation library, so shares with it the use of Dagger Dependency, 
 Bean utilities and most importantly, a Java Persistence API implementation.
 
 ## Getting Started
