@@ -65,6 +65,14 @@
         <id>bintray-melix-thirdparty-apache</id>
         <name>bintray</name>
         <url>http://dl.bintray.com/melix/thirdparty-apache</url>
+     </repository>
+     <repository>
+       <snapshots>
+         <enabled>false</enabled>
+       </snapshots>
+       <id>bintray-andrew-bowley-maven</id>
+       <name>bintray</name>
+       <url>https://dl.bintray.com/andrew-bowley/maven</url>
     </repository>
    </repositories>  
   <build>
